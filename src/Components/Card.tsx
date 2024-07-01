@@ -1,15 +1,21 @@
-import {ReactNode} from "react";
+import { ReactNode } from "react";
 import reinasLogo from "../Img/reinasLogo.png";
 
-interface CardProps{
+interface CardProps {
   children: ReactNode;
 }
 
-
 function Card(props: CardProps) {
-  const {children} = props;
+  const { children } = props;
   return (
-    <div className="card" style={{ backgroundColor: "transparent" }}>
+    <div
+      className="card"
+      style={{
+        backgroundColor: "transparent",
+        padding: "3rem",
+        borderColor: "transparent",
+      }}
+    >
       {children}
     </div>
   );

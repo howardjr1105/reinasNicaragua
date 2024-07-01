@@ -19,6 +19,7 @@ function Entrada({children, type, placeholder}: Props) {
         placeholder={placeholder}
         aria-label="Username"
         aria-describedby="basic-addon1"
+        required
       />
     </div>
   );
