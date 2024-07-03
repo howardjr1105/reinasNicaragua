@@ -1,23 +1,18 @@
-import { ReactNode } from "react";
-import Card from "./Components/Card";
-import Boton from "./Components/Boton";
+import { Suspense } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import reinas from "../Img/reinasLogo.png";
-import Entrada from "./Components/Entrada";
 import "./App.css";
-import Login from "./Screens/Login";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+import { AppRouter } from "./Router";
 
 type Props = {};
 
 function App({}: Props) {
   return (
-     <Login />
-   /* <Router>
-      <Routes>
-        <Route path="Login" element={<Login />}/>
-      </Routes>
-    </Router> */
+     <Router>
+      <Suspense>
+        <AppRouter />
+      </Suspense>
+     </Router>
   );
 }
 

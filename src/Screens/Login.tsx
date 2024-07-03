@@ -5,10 +5,16 @@ import Boton from "../Components/Boton";
 import "bootstrap/dist/css/bootstrap.css";
 import reinas from "../Img/reinasLogo.png";
 import Entrada from "../Components/Entrada";
+import { Navigate, Route, BrowserRouter as Router } from "react-router-dom";
+import Nuevo from "../Components/Nuevo";
 
 type Props = {};
 
 function Login({}: Props) {
+  const [goToHome, setGoToHome] = React.useState(false);
+  if (goToHome) {
+    return <Navigate to="/Home" />;
+  }
   return (
     <div
       style={{
@@ -20,12 +26,16 @@ function Login({}: Props) {
         <img src={reinas} className="img-fluid" width={"400px"}></img>
         <form style={{ alignItems: "center", justifyItems: "center" }}>
           <Entrada type="text" placeholder="Usuario">
-            @
           </Entrada>
           <Entrada type="password" placeholder="Contraseña">
-            *
           </Entrada>
-          <Boton>Iniciar Sesión</Boton>
+          <Boton
+            onClick={() => {
+              setGoToHome(true);
+            }}
+          >
+            Iniciar Sesión
+          </Boton>
         </form>
       </Card>
     </div>

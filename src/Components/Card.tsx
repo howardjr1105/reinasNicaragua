@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import reinasLogo from "../Img/reinasLogo.png";
 
 interface CardProps {
   children: ReactNode;
@@ -12,7 +11,7 @@ function Card(props: CardProps) {
       className="card"
       style={{
         backgroundColor: "transparent",
-        padding: "3rem",
+        padding: "2.8rem",
         borderColor: "transparent",
       }}
     >
