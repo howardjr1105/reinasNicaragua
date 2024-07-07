@@ -6,11 +6,11 @@ import "bootstrap/dist/css/bootstrap.css";
 import reinas from "../Img/reinasLogo.png";
 import Entrada from "../Components/Entrada";
 import { Navigate, Route, BrowserRouter as Router } from "react-router-dom";
-import Nuevo from "../Components/Nuevo";
 
 type Props = {};
 
 function Login({}: Props) {
+  const negro = "btn btn-dark";
   const [goToHome, setGoToHome] = React.useState(false);
   if (goToHome) {
     return <Navigate to="/Home" />;
@@ -23,7 +23,7 @@ function Login({}: Props) {
       }}
     >
       <Card>
-        <img src={reinas} className="img-fluid" width={"400px"}></img>
+        <img src={reinas} className="img-fluid" width={"400px"} style={{marginBottom:"4rem"}}></img>
         <form style={{ alignItems: "center", justifyItems: "center" }}>
           <Entrada type="text" placeholder="Usuario">
           </Entrada>
@@ -33,6 +33,7 @@ function Login({}: Props) {
             onClick={() => {
               setGoToHome(true);
             }}
+            color={negro}
           >
             Iniciar Sesión
           </Boton>

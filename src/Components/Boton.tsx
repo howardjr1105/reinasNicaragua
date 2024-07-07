@@ -5,11 +5,12 @@ import "../App.css";
 type Props = {
   children: ReactNode;
   onClick: () => void;
+  color: string
 };
 
-function boton({ children, onClick }: Props) {
+function boton({ children, onClick, color }: Props) {
   return (
-    <button onClick={onClick} className="btn btn-dark">
+    <button onClick={onClick} className={color}>
       {children}
     </button>
   );

@@ -19,10 +19,22 @@ form {
   justify-content: center;
   background-color: transparent;
 }
-.logo{
+.logo {
   display: flex;
   justify-content: center;
 }
-.album{
+.album {
   padding: 1rem;
+}
+.columna {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.fila {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
