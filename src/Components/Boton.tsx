@@ -6,9 +6,10 @@ type Props = {
   children: ReactNode;
   onClick: () => void;
   color: string
+  isLoading?: boolean
 };
 
-function boton({ children, onClick, color }: Props) {
+function boton({ children, onClick, color, isLoading }: Props) {
   return (
     <button onClick={onClick} className={color}>
       {children}

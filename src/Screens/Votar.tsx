@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import logo from "../Img/reinasLogo.png";
 import Candidata from "../Components/Candidata";
 import Boton from "../Components/Boton";
@@ -7,10 +7,17 @@ import "../App.css";
 type Props = {};
 
 function Votar({}: Props) {
+  const [buttonState, setButtonState] = useState(new Array(10).fill(false));
   const pasarela = "traje de baño";
   const negro = "btn btn-dark";
   const blanco = "btn btn-light";
   const verde = "btn btn-success";
+  const handleButtonClick = (index: number) => {
+    const updateState = buttonState;
+    updateState[index] = !updateState[index];
+    setButtonState(buttonState);
+    console.log(buttonState[index]);
+  };
   const [candidatas, setCandidatas] = useState([
     {
       img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
@@ -35,36 +42,15 @@ function Votar({}: Props) {
           <h3>Puntuación</h3>
         </div>
         <div className="fila">
-          <Boton onClick={() => {}} color={blanco}>
-            1
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            2
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            3
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            4
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            5
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            6
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            7
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            8
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            9
-          </Boton>
-          <Boton onClick={() => {}} color={blanco}>
-            10
-          </Boton>
+          {buttonState.map((state, index) => (
+            <Boton
+              key={index}
+              onClick={() => handleButtonClick(index)}
+              color={state ? verde : blanco}
+            >
+              {index + 1}
+            </Boton>
+          ))}
         </div>
         <div>
           <Boton onClick={() => {}} color={negro}>

@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import Candidata from "../Components/Candidata";
 import "../App.css";
 import logo from "../Img/reinasLogo.png";
+import { FloatButton } from "antd";
+import { RightOutlined } from "@ant-design/icons";
+import { Navigate, Route, BrowserRouter as Router } from "react-router-dom";
 
 type Props = {};
 
 function Home({}: Props) {
+  const [goToVotar, setGoToVotar] = React.useState(false);
   const [candidatas, setCandidatas] = useState([
     {
       img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
@@ -72,6 +76,9 @@ function Home({}: Props) {
       nombre: "Cristel Morales",
     },
   ]);
+  if (goToVotar) {
+    return <Navigate to="/Votar" />;
+  }
 
   return (
     <div className="cand ">
@@ -85,6 +92,15 @@ function Home({}: Props) {
           ))}
         </div>
       </div>
+      <FloatButton
+        onClick={() => {
+          setGoToVotar(true);
+        }}
+        shape="circle"
+        type="primary"
+        style={{ right: 94 }}
+        icon={<RightOutlined />}
+      />
     </div>
   );
 }
