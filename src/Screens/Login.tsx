@@ -4,7 +4,7 @@ import Boton from "../Components/Boton";
 import "bootstrap/dist/css/bootstrap.css";
 import reinas from "../Img/reinasLogo.png";
 import Entrada from "../Components/Entrada";
-import { Navigate} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 type Props = {};
 
@@ -22,12 +22,15 @@ function Login({}: Props) {
       }}
     >
       <Card>
-        <img src={reinas} className="img-fluid" width={"400px"} style={{marginBottom:"4rem"}}></img>
+        <img
+          src={reinas}
+          className="img-fluid"
+          width={"400px"}
+          style={{ marginBottom: "4rem" }}
+        ></img>
         <form style={{ alignItems: "center", justifyItems: "center" }}>
-          <Entrada type="text" placeholder="Usuario">
-          </Entrada>
-          <Entrada type="password" placeholder="Contraseña">
-          </Entrada>
+          <Entrada type="text" placeholder="Correo Electronico"></Entrada>
+          <Entrada type="password" placeholder="Contraseña"></Entrada>
           <Boton
             onClick={() => {
               setGoToHome(true);
