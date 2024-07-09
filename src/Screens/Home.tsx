@@ -4,13 +4,13 @@ import "../App.css";
 import logo from "../Img/reinasLogo.png";
 import { FloatButton } from "antd";
 import { RightOutlined } from "@ant-design/icons";
-import { Navigate, Route, BrowserRouter as Router } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 type Props = {};
 
 function Home({}: Props) {
   const [goToVotar, setGoToVotar] = React.useState(false);
-  const [candidatas, setCandidatas] = useState([
+  const [candidatas] = useState([
     {
       img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
       nombre: "Maria Betanco",

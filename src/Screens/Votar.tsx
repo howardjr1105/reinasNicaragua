@@ -18,7 +18,7 @@ function Votar({}: Props) {
     setButtonState(buttonState);
     console.log(buttonState[index]);
   };
-  const [candidatas, setCandidatas] = useState([
+  const [candidatas] = useState([
     {
       img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
       nombre: "Maria Betanco",

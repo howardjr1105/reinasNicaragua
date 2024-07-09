@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+
 import "bootstrap/dist/css/bootstrap.css";
-import { Flex, Input } from "antd";
+import { Input } from "antd";
 
 type Props = {
   type: string;

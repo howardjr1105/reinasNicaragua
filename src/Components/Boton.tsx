@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode} from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../App.css";
 
@@ -9,7 +9,7 @@ type Props = {
   isLoading?: boolean
 };
 
-function boton({ children, onClick, color, isLoading }: Props) {
+function boton({ children, onClick, color}: Props) {
   return (
     <button onClick={onClick} className={color}>
       {children}
