@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "../Components/Card";
 import Boton from "../Components/Boton";
 import "bootstrap/dist/css/bootstrap.css";
 import reinas from "../Img/reinasLogo.png";
 import Entrada from "../Components/Entrada";
-import { Navigate } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 
 type Props = {};
 
@@ -13,6 +13,9 @@ function Login({}: Props) {
   const [goToHome, setGoToHome] = React.useState(false);
   if (goToHome) {
     return <Navigate to="/Home" />;
+  }
+  function submit(){
+    setGoToHome(true);
   }
   return (
     <div
@@ -28,12 +31,15 @@ function Login({}: Props) {
           width={"400px"}
           style={{ marginBottom: "4rem" }}
         ></img>
-        <form style={{ alignItems: "center", justifyItems: "center" }}>
-          <Entrada type="text" placeholder="Correo Electronico"></Entrada>
+        <form
+          style={{ alignItems: "center", justifyItems: "center" }}
+          onSubmit={submit}
+        >
+          <Entrada type="text" placeholder="Usuario"></Entrada>
           <Entrada type="password" placeholder="Contraseña"></Entrada>
           <Boton
             onClick={() => {
-              setGoToHome(true);
+              //setGoToHome(true);
             }}
             color={negro}
           >
