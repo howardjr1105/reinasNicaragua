@@ -16,7 +16,6 @@ function Votar({}: Props) {
     const updateState = buttonState;
     updateState[index] = !updateState[index];
     setButtonState(buttonState);
-    console.log(buttonState[index]);
   };
   const [candidatas] = useState([
     {

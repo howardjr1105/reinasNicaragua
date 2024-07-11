@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import Card from "../Components/Card";
 import Boton from "../Components/Boton";
 import "bootstrap/dist/css/bootstrap.css";
 import reinas from "../Img/reinasLogo.png";
 import Entrada from "../Components/Entrada";
-import { Navigate, Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 type Props = {};
 
@@ -14,7 +14,7 @@ function Login({}: Props) {
   if (goToHome) {
     return <Navigate to="/Home" />;
   }
-  function submit(){
+  function submit() {
     setGoToHome(true);
   }
   return (

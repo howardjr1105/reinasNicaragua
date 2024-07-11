@@ -1,6 +1,5 @@
 import "bootstrap/dist/css/bootstrap.css";
 import { Input } from "antd";
-import { useForm } from "react-hook-form";
 
 type Props = {
   type: string;
