@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../Components/Card";
 import Boton from "../Components/Boton";
 import "bootstrap/dist/css/bootstrap.css";
@@ -17,6 +17,18 @@ function Login({}: Props) {
   function submit() {
     setGoToHome(true);
   }
+
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch(
+      "https://reinasapipruebaapi.azure-api.net/ReinasApi/api/Participantes"
+    )
+      .then((response) => response.json())
+      .then((data) => setData(data));
+  }, []);
+
+  console.log(data);
+
   return (
     <div
       style={{
