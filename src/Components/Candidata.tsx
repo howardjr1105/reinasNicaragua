@@ -4,9 +4,10 @@ import "../App.css";
 type Props = {
   img: string;
   children: ReactNode;
+  depart: ReactNode;
 };
 
-function Candidata({ children, img }: Props) {
+function Candidata({ children, img, depart }: Props) {
   return (
     <div className="cand">
       <div>
@@ -14,6 +15,7 @@ function Candidata({ children, img }: Props) {
       </div>
       <div>
         <h4>{children}</h4>
+        <p>{depart}</p>
       </div>
     </div>
   );

@@ -20,5 +20,4 @@ export const routes = [
     path: "/admin",
     element: <Admin />,
   },
-  
 ];

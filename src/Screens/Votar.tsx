@@ -8,6 +8,12 @@ type Props = {};
 
 function Votar({}: Props) {
   const [buttonState, setButtonState] = useState(new Array(10).fill(false));
+  const [candidatas] = useState([
+    {
+      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
+      nombre: "Maria Betanco",
+    },
+  ]);
   const pasarela = "traje de baño";
   const negro = "btn btn-dark";
   const blanco = "btn btn-light";
@@ -15,14 +21,9 @@ function Votar({}: Props) {
   const handleButtonClick = (index: number) => {
     const updateState = buttonState;
     updateState[index] = !updateState[index];
-    setButtonState(buttonState);
+    setButtonState(updateState);
   };
-  const [candidatas] = useState([
-    {
-      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
-      nombre: "Maria Betanco",
-    },
-  ]);
+
   return (
     <div className="fila">
       <div className="columna">
@@ -31,7 +32,11 @@ function Votar({}: Props) {
         </div>
         <div>
           {candidatas.map((candidata: any) => (
-            <Candidata img={candidata.img} children={candidata.nombre} />
+            <Candidata
+              img={candidata.img}
+              children={candidata.nombre}
+              depart="Boaco"
+            />
           ))}
         </div>
       </div>

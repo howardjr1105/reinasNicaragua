@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Candidata from "../Components/Candidata";
 import "../App.css";
 import logo from "../Img/reinasLogo.png";
@@ -9,8 +9,27 @@ import { Navigate } from "react-router-dom";
 type Props = {};
 
 function Home({}: Props) {
+  interface Participante {
+    participanteId: number;
+    nombre: string;
+    edad: number;
+    departamento: string;
+    peso: number;
+    estatura: number;
+    biografia: string;
+  }
+
+  const [data, setData] = useState<Participante[]>([]);
+  useEffect(() => {
+    fetch(
+      "https://reinasapipruebaapi.azure-api.net/ReinasApi/api/Participantes"
+    )
+      .then((response) => response.json())
+      .then((data) => setData(data));
+  }, []);
+
   const [goToVotar, setGoToVotar] = React.useState(false);
-  const [candidatas] = useState([
+  /*const [candidatas] = useState([
     {
       img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
       nombre: "Maria Betanco",
@@ -75,7 +94,7 @@ function Home({}: Props) {
       img: "https://i.ibb.co/n74x0jJ/cristel-Morales.png",
       nombre: "Cristel Morales",
     },
-  ]);
+  ]);*/
   if (goToVotar) {
     return <Navigate to="/Votar" />;
   }
@@ -87,8 +106,12 @@ function Home({}: Props) {
       </div>
       <div className="album py-5 bg-body-tertiary home">
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 row-cols-md-4 g-4">
-          {candidatas.map((candidata: any) => (
-            <Candidata img={candidata.img} children={candidata.nombre} />
+          {data.map((candidata: any) => (
+            <Candidata
+              img={"https://i.ibb.co/n74x0jJ/cristel-Morales.png"}
+              children={candidata.nombre}
+              depart={candidata.departamento}
+            />
           ))}
         </div>
       </div>
