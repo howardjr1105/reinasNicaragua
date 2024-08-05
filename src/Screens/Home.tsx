@@ -9,6 +9,14 @@ import { Navigate } from "react-router-dom";
 type Props = {};
 
 function Home({}: Props) {
+  const [data, setData] = useState<Participante[]>([]);
+  useEffect(() => {
+    fetch(
+      "https://reinasapipruebaapi.azure-api.net/ReinasApi/api/Participantes"
+    )
+      .then((response) => response.json())
+      .then((data) => setData(data));
+  }, []);
   interface Participante {
     participanteId: number;
     nombre: string;
@@ -18,16 +26,6 @@ function Home({}: Props) {
     estatura: number;
     biografia: string;
   }
-
-  const [data, setData] = useState<Participante[]>([]);
-  useEffect(() => {
-    fetch(
-      "https://reinasapipruebaapi.azure-api.net/ReinasApi/api/Participantes"
-    )
-      .then((response) => response.json())
-      .then((data) => setData(data));
-  }, []);
-
   const [goToVotar, setGoToVotar] = React.useState(false);
 
   if (goToVotar) {
