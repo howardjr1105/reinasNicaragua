@@ -9,29 +9,6 @@ import { Navigate } from "react-router-dom";
 type Props = {};
 
 function Login({}: Props) {
-  interface Participante {
-    participanteId: number;
-    nombre: string;
-    edad: number;
-    departamento: string;
-    peso: number;
-    estatura: number;
-    biografia: string;
-  }
-
-  const [data, setData] = useState<Participante[]>([]);
-  useEffect(() => {
-    fetch(
-      "https://reinasapipruebaapi.azure-api.net/ReinasApi/api/Participantes"
-    )
-      .then((response) => response.json())
-      .then((data) => setData(data));
-  }, []);
-
-  data.map((participantes) => {
-    console.log(participantes.nombre);
-  });
-
   const negro = "btn btn-dark";
   const [goToHome, setGoToHome] = React.useState(false);
   if (goToHome) {
