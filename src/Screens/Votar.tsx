@@ -19,13 +19,14 @@ function Votar({}: Props) {
     {
       img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
       nombre: "Maria Betanco",
+      participanteId: 1,
     },
   ]);
   const pasarela = "traje de baño";
   const negro = "btn btn-dark";
   const blanco = "btn btn-light";
   const verde = "btn btn-success";
-  
+
   const handleClick = (index: number) => {
     setButtonState(() => {
       const newButtonState = new Array(10).fill(false).map((_, index) => ({
@@ -54,6 +55,7 @@ function Votar({}: Props) {
               img={candidata.img}
               children={candidata.nombre}
               depart="Boaco"
+              key={candidata.participanteId}
             />
           ))}
         </div>

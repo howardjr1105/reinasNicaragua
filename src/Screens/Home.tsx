@@ -44,6 +44,7 @@ function Home({}: Props) {
               img={"https://i.ibb.co/n74x0jJ/cristel-Morales.png"}
               children={candidata.nombre}
               depart={candidata.departamento}
+              key={candidata.participanteId}
             />
           ))}
         </div>

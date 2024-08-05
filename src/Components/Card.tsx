@@ -19,6 +19,7 @@ function Card(props: CardProps) {
     </div>
   );
 }
+
 interface CardBodyProps {
   title: string;
   text?: string;

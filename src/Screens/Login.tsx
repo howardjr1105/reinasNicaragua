@@ -32,6 +32,7 @@ function Login({}: Props) {
           width={"400px"}
           style={{ marginBottom: "4rem" }}
         ></img>
+
         <form
           style={{ alignItems: "center", justifyItems: "center" }}
           onSubmit={submit}
