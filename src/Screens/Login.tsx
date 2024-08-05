@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Card from "../Components/Card";
 import Boton from "../Components/Boton";
 import "bootstrap/dist/css/bootstrap.css";

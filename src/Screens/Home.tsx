@@ -29,72 +29,7 @@ function Home({}: Props) {
   }, []);
 
   const [goToVotar, setGoToVotar] = React.useState(false);
-  /*const [candidatas] = useState([
-    {
-      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
-      nombre: "Maria Betanco",
-    },
-    {
-      img: "https://i.ibb.co/n74x0jJ/cristel-Morales.png",
-      nombre: "Cristel Morales",
-    },
-    {
-      img: "https://i.ibb.co/61H5NYG/dayami-Izaguirre.png",
-      nombre: "Dayami Izaguirre",
-    },
-    {
-      img: "https://i.ibb.co/7SWqDK6/ligia-Martinez.png",
-      nombre: "Ligia Martinez",
-    },
-    {
-      img: "https://i.ibb.co/pz6TXNg/faviana-Gutierrez.png",
-      nombre: "Faviana Gutierrez",
-    },
-    {
-      img: "https://i.ibb.co/n74x0jJ/cristel-Morales.png",
-      nombre: "Cristel Morales",
-    },
-    {
-      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
-      nombre: "Maria Betanco",
-    },
-    {
-      img: "https://i.ibb.co/n74x0jJ/cristel-Morales.png",
-      nombre: "Cristel Morales",
-    },
-    {
-      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
-      nombre: "Maria Betanco",
-    },
-    {
-      img: "https://i.ibb.co/n74x0jJ/cristel-Morales.png",
-      nombre: "Cristel Morales",
-    },
-    {
-      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
-      nombre: "Maria Betanco",
-    },
-    {
-      img: "https://i.ibb.co/n74x0jJ/cristel-Morales.png",
-      nombre: "Cristel Morales",
-    },
-    {
-      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
-      nombre: "Maria Betanco",
-    },
-    {
-      img: "https://i.ibb.co/n74x0jJ/cristel-Morales.png",
-      nombre: "Cristel Morales",
-    },
-    {
-      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
-      nombre: "Maria Betanco",
-    },
-    {
-      img: "https://i.ibb.co/n74x0jJ/cristel-Morales.png",
-      nombre: "Cristel Morales",
-    },
-  ]);*/
+
   if (goToVotar) {
     return <Navigate to="/Votar" />;
   }
