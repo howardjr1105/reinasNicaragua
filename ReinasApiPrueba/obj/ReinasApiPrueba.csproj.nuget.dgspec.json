@@ -1,27 +1,35 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\howar\\Downloads\\ReinasApiPrueba\\ReinasApiPrueba\\ReinasApiPrueba.csproj": {}
+    "D:\\reinasNicaragua\\ReinasApiPrueba\\ReinasApiPrueba.csproj": {}
   },
   "projects": {
-    "C:\\Users\\howar\\Downloads\\ReinasApiPrueba\\ReinasApiPrueba\\ReinasApiPrueba.csproj": {
+    "D:\\reinasNicaragua\\ReinasApiPrueba\\ReinasApiPrueba.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\howar\\Downloads\\ReinasApiPrueba\\ReinasApiPrueba\\ReinasApiPrueba.csproj",
+        "projectUniqueName": "D:\\reinasNicaragua\\ReinasApiPrueba\\ReinasApiPrueba.csproj",
         "projectName": "ReinasApiPrueba",
-        "projectPath": "C:\\Users\\howar\\Downloads\\ReinasApiPrueba\\ReinasApiPrueba\\ReinasApiPrueba.csproj",
-        "packagesPath": "C:\\Users\\howar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\howar\\Downloads\\ReinasApiPrueba\\ReinasApiPrueba\\obj\\",
+        "projectPath": "D:\\reinasNicaragua\\ReinasApiPrueba\\ReinasApiPrueba.csproj",
+        "packagesPath": "C:\\Users\\Intel Core I7\\.nuget\\packages\\",
+        "outputPath": "D:\\reinasNicaragua\\ReinasApiPrueba\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\howar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Intel Core I7\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 18.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\DevExpress 18.2\\Components\\System\\Components\\Packages": {},
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -34,6 +42,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -90,7 +103,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using ReinasApiPrueba.Models;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -26,11 +27,11 @@
             if (usuario != null)
             {
                 // Devolver un objeto anónimo con el usuario_id y true
-                return new { usuario_id = usuario.UsuarioId, autenticado = true };
+                return new GenricResponse() {success = true, Message= "Usuario Autenticado", Data = new { usuario_id = usuario.UsuarioId, autenticado = true } };//{ usuario_id = usuario.UsuarioId, autenticado = true };
             }
 
             // Si no se encontró el usuario, devolver false
-            return new { autenticado = false };
+            return  new GenricResponse() { success = true, Message = "Erro Autenticado Usuario", Data = login };
         }
     }
 
