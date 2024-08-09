@@ -41,10 +41,13 @@ function Login({}: Props) {
       }
 
       const data = await response.json();
-      //console.log("Success:", data);
-      setRespAPI(data);
-      console.log("Success:", respAPI);
-      submit(respAPI);
+      console.log("Success:", data);
+      localStorage.setItem("userData", JSON.stringify(data));
+      setGoToHome(true);
+
+      //setRespAPI(data);
+      //console.log("Success:", respAPI);
+      //submit(respAPI);
       // Maneja la respuesta exitosa, por ejemplo, almacena el token o redirige
     } catch (error) {
       console.error("Error:", error);

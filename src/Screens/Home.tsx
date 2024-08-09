@@ -9,7 +9,15 @@ import { Navigate } from "react-router-dom";
 type Props = {};
 
 function Home({}: Props) {
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+      setUsuario(parsedData);
+    }
+  }, []);
   const [data, setData] = useState<Participante[]>([]);
+  const [usuario, setUsuario] = useState<autenticacion>();
   useEffect(() => {
     fetch("https://reinasapiprueba.azurewebsites.net/api/Participantes")
       .then((response) => response.json())
@@ -23,6 +31,11 @@ function Home({}: Props) {
     peso: number;
     estatura: number;
     biografia: string;
+  }
+  interface autenticacion {
+    // Define los campos de tu formulario
+    autenticado: boolean;
+    usuario_id: number;
   }
   const [goToVotar, setGoToVotar] = React.useState(false);
 
