@@ -11,9 +11,7 @@ type Props = {};
 function Home({}: Props) {
   const [data, setData] = useState<Participante[]>([]);
   useEffect(() => {
-    fetch(
-      "https://reinasapipruebaapi.azure-api.net/ReinasApi/api/Participantes"
-    )
+    fetch("https://reinasapiprueba.azurewebsites.net/api/Participantes")
       .then((response) => response.json())
       .then((data) => setData(data));
   }, []);

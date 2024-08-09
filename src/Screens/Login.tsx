@@ -26,7 +26,7 @@ function Login({}: Props) {
 
     try {
       const response = await fetch(
-        "https://reinasapiprueba1.azurewebsites.net/api/Auth/authenticate",
+        "https://reinasapiprueba.azurewebsites.net/api/Auth/authenticate",
         {
           method: "POST",
           headers: {
