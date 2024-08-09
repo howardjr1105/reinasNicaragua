@@ -22,13 +22,16 @@ namespace ReinasApiPrueba.Controllers
 
         // GET: api/Participantes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Participante>>> GetParticipantes()
+        public async Task<ActionResult<object>> GetParticipantes()
         {
-          if (_context.Participantes == null)
-          {
-              return NotFound();
-          }
-            return await _context.Participantes.ToListAsync();
+          //if (_context.Participantes == null)
+          //{
+          //    return NotFound();
+          //}
+          //  return await _context.Participantes.ToListAsync();
+          var particioanteslist = await _context.Participantes.ToListAsync();
+
+          return new GenricResponse() { success = particioanteslist.Any(), Message = "Listado de participantes", Data = particioanteslist };
         }
 
         // GET: api/Participantes/5
