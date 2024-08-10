@@ -9,21 +9,54 @@ import React from "react";
 type Props = {};
 
 function Votar({}: Props) {
-  const [candidatas] = useState([
-    {
-      img: "https://i.ibb.co/28nTBmx/maria-Betanco.png",
-      nombre: "Maria Betanco",
-      participanteId: 1,
-    },
-  ]);
+  const [data, setData] = useState<Participante>();
+  const [message, setMessage] = useState<dataRecibe>();
+  const [candidatas, setCandidatas] = useState<response>();
   const [goToHome, setGoToHome] = React.useState(false);
-  const [usuario, setUsuario] = useState<autenticacion>();
+  const [usuario, setUsuario] = useState<respuesta>();
   const [buttonState, setButtonState] = useState(
     new Array(10).fill(false).map((_, index) => ({
       key: index,
       value: false,
     }))
   );
+  useEffect(() => {
+    const messageData = localStorage.getItem("messageData");
+    if (messageData) {
+      const parsedData = JSON.parse(messageData);
+      console.log(parsedData); // Verifica si los datos son correctos
+      setMessage(parsedData);
+    }
+  }, []);
+
+  /*useEffect(() => {
+    if (message) {
+      console.log("Message received from SignalR:", message);
+      const prueba = message.participante_id;
+      console.log(prueba);
+    }
+  }, [message]);*/
+  //const rondaId = message?.participante_id;
+
+  useEffect(() => {
+    if (message?.participante_id) {
+      //const rondaId = message.participante_id;
+      fetch(
+        `https://localhost:7093/api/Participantes/${message.participante_id.toString()}`
+      )
+        .then((response) => response.json())
+        .then((data) => setData(data));
+      console.log(data);
+    }
+  }, [message]);
+  useEffect(() => {
+    if (message) {
+      console.log("Message received from SignalR:", message);
+      const prueba = message.participante_id;
+      console.log(prueba);
+    }
+  }, [message]);
+
   useEffect(() => {
     const userData = localStorage.getItem("userData");
     if (userData) {
@@ -32,12 +65,42 @@ function Votar({}: Props) {
     }
   }, []);
 
-  interface autenticacion {
-    // Define los campos de tu formulario
-    autenticado: boolean;
-    usuario_id: number;
+  interface candidata {
+    img: string;
+    nombre: string;
+    participanteId: number;
   }
-  const rondaId = 1;
+
+  interface respuesta {
+    seccess: Boolean;
+    message: String;
+    data: objeto;
+  }
+  interface objeto {
+    usuario_id: Number;
+    autenticado: Boolean;
+    rol_id: Number;
+  }
+  interface response {
+    seccess: Boolean;
+    message: String;
+    data: Participante[];
+  }
+  interface Participante {
+    participanteId: number;
+    nombre: string;
+    edad: number;
+    departamento: string;
+    peso: number;
+    estatura: number;
+    biografia: string;
+    img: string;
+  }
+  interface dataRecibe {
+    ronda_id: number;
+    participante_id: number;
+  }
+
   const pasarela = "traje de baño";
   const negro = "btn btn-dark";
   const blanco = "btn btn-light";
@@ -59,24 +122,21 @@ function Votar({}: Props) {
     if (selectedButtonIndex !== -1) {
       const puntuacion = selectedButtonIndex + 1;
 
-      const data = {
-        usuario_ID: usuario?.usuario_id,
-        participante_ID: candidatas[0].participanteId, // Asumiendo que solo hay una candidata
-        ronda_ID: rondaId,
-        puntuacion,
-      };
+      // const data = {
+      //   usuario_ID: usuario?.data.usuario_id,
+      //   participante_ID: message?.participante_id, // Asumiendo que solo hay una candidata
+      //   ronda_ID: message?.ronda_id,
+      //   puntuacion,
+      // };
 
       try {
-        const response = await fetch(
-          "https://reinasapiprueba.azurewebsites.net/api/Votacion",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
+        const response = await fetch("https://localhost:7093/api/Votacion", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
         if (!response.ok) {
           throw new Error("Error: " + response.statusText);
@@ -105,14 +165,12 @@ function Votar({}: Props) {
           <img src={logo} className="img-fluid" width={"150px"}></img>
         </div>
         <div>
-          {candidatas.map((candidata: any) => (
-            <Candidata
-              img={candidata.img}
-              children={candidata.nombre}
-              depart="Boaco"
-              key={candidata.participanteId}
-            />
-          ))}
+          <Candidata
+            children={data?.nombre}
+            depart={data?.departamento}
+            key={data?.participanteId}
+            img={data?.img}
+          />
         </div>
       </div>
       <div className="columna">

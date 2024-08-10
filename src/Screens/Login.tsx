@@ -26,7 +26,7 @@ function Login({}: Props) {
 
     try {
       const response = await fetch(
-        "https://reinasapiprueba.azurewebsites.net/api/Auth/authenticate",
+        "https://localhost:7093/api/Auth/authenticate",
         {
           method: "POST",
           headers: {
@@ -43,8 +43,7 @@ function Login({}: Props) {
       const data = await response.json();
       console.log("Success:", data);
       localStorage.setItem("userData", JSON.stringify(data));
-      setGoToHome(true);
-
+      setGoToPage(data);
       //setRespAPI(data);
       //console.log("Success:", respAPI);
       //submit(respAPI);
@@ -56,10 +55,20 @@ function Login({}: Props) {
   };
   const negro = "btn btn-dark";
 
-  function submit(data?: respuesta) {
+  /*function submit(data?: respuesta) {
     if (data?.autenticado) {
       setGoToHome(data.autenticado);
     }
+  }*/
+  interface respuesta {
+    seccess: Boolean;
+    message: String;
+    data: objeto;
+  }
+  interface objeto {
+    usuario_id: Number;
+    autenticado: Boolean;
+    rol_id: Number;
   }
 
   interface FormData {
@@ -67,18 +76,22 @@ function Login({}: Props) {
     correo: string;
     contraseña: string;
   }
-  interface respuesta {
+  /*interface respuesta {
     // Define los campos de tu formulario
 
     autenticado: boolean;
     usuario_id: number;
-  }
-  const [respAPI, setRespAPI] = useState<respuesta>();
+  }*/
+  //const [respAPI, setRespAPI] = useState<respuesta>();
 
-  const [goToHome, setGoToHome] = React.useState(false);
-  if (goToHome) {
+  const [goToPage, setGoToPage] = React.useState<respuesta>();
+
+  if (goToPage?.data.rol_id == 2) {
     return <Navigate to="/Home" />;
+  } else if (goToPage?.data.rol_id == 1) {
+    return <Navigate to="/Admin" />;
   }
+
   return (
     <div
       style={{
