@@ -26,6 +26,7 @@ function Admin({}: Props) {
   }, []);
   const [usuario, setUsuario] = useState<respuesta>();
   const [dataRondas, setDataRondas] = useState<rondas[]>([]);
+  const [dataRondasPremdio, setDataRondasPromedio] = useState<number>();
   const [dataCandidata, setDataCandidata] = useState<response>();
   const [selectedRonda, setSelectedRonda] = useState<number | null>(null);
   const [data, setData] = useState<top[]>([]);
@@ -38,6 +39,10 @@ function Admin({}: Props) {
   const handleRondaChange = (value: number) => {
     console.log(`selected ronda ${value}`);
     setSelectedRonda(value);
+  };
+  const handleRondaPromedioChange = (value: number) => {
+    console.log(`selected ronda Promedio ${value}`);
+    setDataRondasPromedio(value);
   };
 
   const handleCandidataChange = (value: number) => {
@@ -81,6 +86,16 @@ function Admin({}: Props) {
   const optionsRondas = dataRondas.map((ronda) => ({
     value: ronda.ronda_ID,
     label: ronda.nombre,
+  }));
+  const RondasPromedio: rondas[] = [
+    { ronda_ID: 1, nombre: "Promedio 4 rondas" },
+    { ronda_ID: 2, nombre: "Top 6" },
+    { ronda_ID: 3, nombre: "Top 3" },
+    { ronda_ID: 4, nombre: "Top 1" },
+  ];
+  const optionsRondasPromedio = RondasPromedio.map((promedio) => ({
+    value: promedio.ronda_ID,
+    label: promedio.nombre,
   }));
   const optionsCandidatas = dataCandidata?.data.map((participante) => ({
     value: participante.participanteId,
@@ -215,9 +230,38 @@ function Admin({}: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     if (isModalOpen) {
-      fetch("https://reinasapiprueba.azurewebsites.net/api/Promedios")
-        .then((response) => response.json())
-        .then((data) => setData(data));
+      switch (dataRondasPremdio) {
+        case 1:
+          fetch("https://reinasapiprueba.azurewebsites.net/api/Promedios")
+            .then((response) => response.json())
+            .then((data) => setData(data));
+          break;
+        case 2:
+          fetch(
+            "https://reinasapiprueba.azurewebsites.net/api/Promedios/ListarTop6"
+          )
+            .then((response) => response.json())
+            .then((data) => setData(data));
+          break;
+        case 3:
+          fetch(
+            "https://reinasapiprueba.azurewebsites.net/api/Promedios/ListarTop3"
+          )
+            .then((response) => response.json())
+            .then((data) => setData(data));
+          break;
+        case 4:
+          fetch(
+            "https://reinasapiprueba.azurewebsites.net/api/Promedios/ListarGanadora"
+          )
+            .then((response) => response.json())
+            .then((data) => setData(data));
+          break;
+
+        default:
+          console.log("Error en el switch");
+          break;
+      }
     }
   }, [isModalOpen]);
   const showModal = () => {
@@ -308,8 +352,13 @@ function Admin({}: Props) {
       </div>
       <div>
         <>
+          <Select
+            style={{ width: 120 }}
+            options={optionsRondasPromedio}
+            onChange={handleRondaPromedioChange}
+          />
           <Button type="primary" onClick={showModal}>
-            Open Modal
+            Listar
           </Button>
           <Button type="primary" onClick={top10}>
             Top 10
