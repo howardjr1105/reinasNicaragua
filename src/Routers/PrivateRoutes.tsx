@@ -1,5 +1,4 @@
 import { message } from "antd";
-import { useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 type Props = {
@@ -7,8 +6,6 @@ type Props = {
 };
 
 export default function PrivateRoutes({ allowroled }: Props) {
-  //   const { isAuth, datatoken } = useDataContext();
-  //const dataResposeToken = datatoken;
   interface respuesta {
     seccess: Boolean;
     message: String;
@@ -19,14 +16,16 @@ export default function PrivateRoutes({ allowroled }: Props) {
     autenticado: Boolean;
     rol_id: Number;
   }
-  const [usuario, setUsuario] = useState<respuesta>();
   const userData = localStorage.getItem("userData");
+
+  let miRespuesta: respuesta | null = null;
+
   if (userData) {
-    const parsedData = JSON.parse(userData);
-    setUsuario(parsedData);
+    miRespuesta = JSON.parse(userData) as respuesta;
   }
-  const dataResposeToken = usuario?.data.rol_id;
-  const isAuth = usuario?.data.autenticado;
+
+  const isAuth = miRespuesta?.data.autenticado; //es si el usuario swe autentico correctemente
+  const roleId = miRespuesta?.data.rol_id; //Aqui tenes que buscar el role ID
 
   const notpermission = () => {
     message.open({
@@ -34,12 +33,17 @@ export default function PrivateRoutes({ allowroled }: Props) {
       type: "error",
       content: "No Tiene Permiso",
     });
-    return <Navigate to={"/Home"}></Navigate>;
+
+    if (roleId == 1) {
+      return <Navigate to={"/admin"}></Navigate>;
+    } else {
+      return <Navigate to={"/home"}></Navigate>;
+    }
   };
 
   return !isAuth ? (
     <Navigate to={"/"}></Navigate>
-  ) : allowroled.includes(dataResposeToken) ? (
+  ) : allowroled.includes(roleId) ? (
     <Outlet />
   ) : (
     notpermission()

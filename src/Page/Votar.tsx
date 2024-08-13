@@ -11,7 +11,6 @@ type Props = {};
 function Votar({}: Props) {
   const [data, setData] = useState<Participante>();
   const [message, setMessage] = useState<dataRecibe>();
-  const [candidatas, setCandidatas] = useState<response>();
   const [goToHome, setGoToHome] = React.useState(false);
   const [usuario, setUsuario] = useState<respuesta>();
   const [buttonState, setButtonState] = useState(
@@ -20,6 +19,20 @@ function Votar({}: Props) {
       value: false,
     }))
   );
+  const [timeLeft, setTimeLeft] = useState(60); // Nuevo estado para el contador
+
+  // useEffect para el temporizador
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(timer); // Limpiar el intervalo si el componente se desmonta o si el tiempo se acaba
+    } else {
+      setGoToHome(true); // Redirige a Home cuando el tiempo se acaba
+    }
+  }, [timeLeft]);
   useEffect(() => {
     const messageData = localStorage.getItem("messageData");
     if (messageData) {
@@ -42,7 +55,7 @@ function Votar({}: Props) {
     if (message?.participante_id) {
       //const rondaId = message.participante_id;
       fetch(
-        `https://localhost:7093/api/Participantes/${message.participante_id.toString()}`
+        `https://reinasapiprueba.azurewebsites.net/api/Participantes/${message.participante_id.toString()}`
       )
         .then((response) => response.json())
         .then((data) => setData(data));
@@ -62,14 +75,9 @@ function Votar({}: Props) {
     if (userData) {
       const parsedData = JSON.parse(userData);
       setUsuario(parsedData);
+      console.log(usuario);
     }
   }, []);
-
-  interface candidata {
-    img: string;
-    nombre: string;
-    participanteId: number;
-  }
 
   interface respuesta {
     seccess: Boolean;
@@ -81,11 +89,7 @@ function Votar({}: Props) {
     autenticado: Boolean;
     rol_id: Number;
   }
-  interface response {
-    seccess: Boolean;
-    message: String;
-    data: Participante[];
-  }
+
   interface Participante {
     participanteId: number;
     nombre: string;
@@ -101,10 +105,24 @@ function Votar({}: Props) {
     participante_id: number;
   }
 
-  const pasarela = "traje de baño";
+  let pasarela;
   const negro = "btn btn-dark";
   const blanco = "btn btn-light";
   const verde = "btn btn-success";
+
+  switch (message?.ronda_id) {
+    case 1:
+      pasarela = "Pasarela de traje de noche";
+      break;
+    case 2:
+      pasarela = "Pasarela de traje casual";
+      break;
+    case 3:
+      pasarela = "Pasarela de traje de baño";
+      break;
+    default:
+      pasarela = "Ronda de preguntas";
+  }
 
   const handleClick = (index: number) => {
     setButtonState(() => {
@@ -122,21 +140,24 @@ function Votar({}: Props) {
     if (selectedButtonIndex !== -1) {
       const puntuacion = selectedButtonIndex + 1;
 
-      // const data = {
-      //   usuario_ID: usuario?.data.usuario_id,
-      //   participante_ID: message?.participante_id, // Asumiendo que solo hay una candidata
-      //   ronda_ID: message?.ronda_id,
-      //   puntuacion,
-      // };
-
+      const data = {
+        usuario_ID: usuario?.data.usuario_id,
+        participante_ID: message?.participante_id, // Asumiendo que solo hay una candidata
+        ronda_ID: message?.ronda_id,
+        puntuacion,
+      };
+      console.log(data);
       try {
-        const response = await fetch("https://localhost:7093/api/Votacion", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+        const response = await fetch(
+          "https://reinasapiprueba.azurewebsites.net/api/Votacion",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Error: " + response.statusText);
@@ -169,14 +190,16 @@ function Votar({}: Props) {
             children={data?.nombre}
             depart={data?.departamento}
             key={data?.participanteId}
-            img={data?.img}
+            img={data?.img || ""}
           />
         </div>
       </div>
       <div className="columna">
         <div className="columna" style={{ justifyContent: "initial" }}>
-          <h1>Pasarela de {pasarela}</h1>
+          <h1>{pasarela}</h1>
           <h3>Puntuación</h3>
+          <p>Tiempo restante: {timeLeft} segundos</p>{" "}
+          {/* Mostrar el contador */}
         </div>
         <div className="fila">
           {buttonState.map((boton, index) => (

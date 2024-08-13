@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import Candidata from "../Components/Candidata";
 import "../App.css";
 import logo from "../Img/reinasLogo.png";
-import { FloatButton } from "antd";
-import { RightOutlined } from "@ant-design/icons";
 import { Navigate } from "react-router-dom";
 import * as signalR from "@microsoft/signalr";
 
@@ -23,7 +21,7 @@ function Home({}: Props) {
   const [data, setData] = useState<response>();
   const [usuario, setUsuario] = useState<respuesta>();
   useEffect(() => {
-    fetch("https://localhost:7093/api/Participantes")
+    fetch("https://reinasapiprueba.azurewebsites.net/api/Participantes")
       .then((response) => response.json())
       .then((data) => setData(data));
   }, []);
@@ -32,7 +30,7 @@ function Home({}: Props) {
   useEffect(() => {
     const initSignalRConnection = async () => {
       const conn = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:7093/notificationHub")
+        .withUrl("https://reinasapiprueba.azurewebsites.net/notificationHub")
         .build();
 
       try {
@@ -54,6 +52,14 @@ function Home({}: Props) {
             localStorage.setItem("messageData", JSON.stringify(parsedMessage));
             //setMessage();
             setGoToVotar(true); // Set navigation to vote screen
+          } else if (
+            parsedMessage.pagina == "Final" &&
+            parsedMessage.ronda_id
+          ) {
+            localStorage.setItem("messageData", JSON.stringify(parsedMessage));
+            setGoToFinal(true);
+          } else if (parsedMessage.pagina == "Espera") {
+            setGoToEspera(true);
           }
         });
         setConnection(conn);
@@ -85,7 +91,7 @@ function Home({}: Props) {
     peso: number;
     estatura: number;
     biografia: string;
-    img : string;
+    img: string;
   }
   interface respuesta {
     seccess: Boolean;
@@ -99,9 +105,11 @@ function Home({}: Props) {
   }
   const [goToVotar, setGoToVotar] = React.useState(false);
 
-  if (goToVotar) {
-    return <Navigate to="/Votar" />;
-  }
+  const [goToEspera, setGoToEspera] = React.useState(false);
+  const [goToFinal, setGoToFinal] = React.useState(false);
+  if (goToVotar) return <Navigate to="/Votar" />;
+  if (goToFinal) return <Navigate to="/Final" />;
+  if (goToEspera) return <Navigate to="/Espera" />;
 
   return (
     <div className="cand ">
@@ -120,15 +128,6 @@ function Home({}: Props) {
           ))}
         </div>
       </div>
-      <FloatButton
-        onClick={() => {
-          setGoToVotar(true);
-        }}
-        shape="circle"
-        type="primary"
-        style={{ right: 94 }}
-        icon={<RightOutlined />}
-      />
     </div>
   );
 }
