@@ -14,8 +14,8 @@ function Candidata({ children, img, depart }: Props) {
         <img src={img}></img>
       </div>
       <div>
-        <h4>{children}</h4>
-        <p>{depart}</p>
+        <h6>{children}</h6>
+        <h5>{depart}</h5>
       </div>
     </div>
   );

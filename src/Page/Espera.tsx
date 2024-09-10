@@ -46,6 +46,7 @@ const Espera = () => {
         setConnection(conn);
       } catch (err) {
         console.error("Error connecting to SignalR hub", err);
+        
       }
     };
 
@@ -75,7 +76,7 @@ const Espera = () => {
   if (goToEspera) return <Navigate to="/Home" />;
 
   return (
-    <div>
+    <div className="centrar">
       <img src={logo} />
     </div>
   );

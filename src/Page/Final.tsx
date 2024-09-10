@@ -76,9 +76,9 @@ const Final = () => {
       //const puntuacion = "1";
       const dataV = {
         usuario_ID: usuario?.data.usuario_id,
-        participante_ID: selectedParticipant, // Asumiendo que solo hay una candidata
+        participante_ID: selectedParticipant, 
         ronda_ID: message?.ronda_id,
-        puntuacion: message?.ronda_id,
+        puntuacion: 1,
       };
       console.log(dataV);
       fetch("https://reinasapiprueba.azurewebsites.net/api/Votacion", {
@@ -105,7 +105,7 @@ const Final = () => {
   }
 
   return (
-    <div className="columna">
+    <div className="columna centrar">
       <div>
         <img src={logo} className="img-fluid" width={"150px"} alt="Logo" />
       </div>

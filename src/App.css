@@ -1,6 +1,13 @@
 body {
   background: transparent;
   background-image: linear-gradient(180deg, #1152a0 0%, #a8d7ca 100%);
+  cursor: default;
+  user-select: none;
+}
+.candidata-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem; /* Ajusta el espacio entre los elementos */
 }
 form {
   display: flex;
@@ -12,10 +19,26 @@ form {
   justify-content: center;
   background-color: transparent !important;
 }
+.centrar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
 .cand img {
-  width: 10rem;
+  width: 12rem;
 }
 .cand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 2.5rem;
+}
+.principal {
   justify-content: center;
   background-color: transparent;
 }
@@ -42,5 +65,22 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center; /* Opcional, para centrar el contenido */
-  margin-bottom: 20px; /* Ajusta este valor según lo necesites */
+  margin: 2em;
+}
+.botonera button {
+  margin: 0.3rem;
+}
+.titulo-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem; /* Añadir un margen inferior para espaciado */
+}
+
+.titulo-container h1,
+.titulo-container h3,
+.titulo-container p {
+  margin: 0.5rem 0; /* Espaciado vertical entre cada elemento */
+  text-align: center; /* Centrar el texto */
 }

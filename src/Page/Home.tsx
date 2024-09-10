@@ -51,6 +51,8 @@ function Home({}: Props) {
           if (parsedMessage.ronda_id && parsedMessage.participante_id) {
             localStorage.setItem("messageData", JSON.stringify(parsedMessage));
             //setMessage();
+            
+
             setGoToVotar(true); // Set navigation to vote screen
           } else if (
             parsedMessage.pagina == "Final" &&
@@ -112,12 +114,12 @@ function Home({}: Props) {
   if (goToEspera) return <Navigate to="/Espera" />;
 
   return (
-    <div className="cand ">
+    <div className="principal">
       <div className="logo">
         <img src={logo} className="img-fluid" width={"150px"}></img>
       </div>
       <div className="album py-5 bg-body-tertiary home">
-        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 row-cols-md-4 g-4">
+        <div className="candidata-grid">
           {data?.data.map((candidata: any) => (
             <Candidata
               img={candidata.img}

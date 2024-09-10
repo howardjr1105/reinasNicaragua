@@ -6,6 +6,7 @@ import reinas from "../Img/reinasLogo.png";
 import Entrada from "../Components/Entrada";
 import { Navigate } from "react-router-dom";
 
+
 type Props = {};
 
 function Login({}: Props) {
@@ -18,7 +19,6 @@ function Login({}: Props) {
       ...formData,
       [event.target.name]: event.target.value,
     });
-    //console.log(formData);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -39,27 +39,16 @@ function Login({}: Props) {
       if (!response.ok) {
         throw new Error("Error: " + response.statusText);
       }
-
       const data = await response.json();
       console.log("Success:", data);
       localStorage.setItem("userData", JSON.stringify(data));
       setGoToPage(data);
-      //setRespAPI(data);
-      //console.log("Success:", respAPI);
-      //submit(respAPI);
-      // Maneja la respuesta exitosa, por ejemplo, almacena el token o redirige
     } catch (error) {
       console.error("Error:", error);
-      // Maneja el error, como mostrar un mensaje al usuario
     }
   };
   const negro = "btn btn-dark";
 
-  /*function submit(data?: respuesta) {
-    if (data?.autenticado) {
-      setGoToHome(data.autenticado);
-    }
-  }*/
   interface respuesta {
     seccess: Boolean;
     message: String;
@@ -76,13 +65,6 @@ function Login({}: Props) {
     correo: string;
     contraseña: string;
   }
-  /*interface respuesta {
-    // Define los campos de tu formulario
-
-    autenticado: boolean;
-    usuario_id: number;
-  }*/
-  //const [respAPI, setRespAPI] = useState<respuesta>();
 
   const [goToPage, setGoToPage] = React.useState<respuesta>();
 
@@ -93,12 +75,7 @@ function Login({}: Props) {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
+    <div className="centrar">
       <Card>
         <img
           src={reinas}
@@ -123,12 +100,7 @@ function Login({}: Props) {
             onChange={handleChange}
             name="contraseña"
           ></Entrada>
-          <Boton
-            onClick={() => {
-              //setGoToHome(true);
-            }}
-            color={negro}
-          >
+          <Boton onClick={() => {}} color={negro}>
             Iniciar Sesión
           </Boton>
         </form>

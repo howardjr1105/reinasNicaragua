@@ -112,13 +112,25 @@ function Votar({}: Props) {
 
   switch (message?.ronda_id) {
     case 1:
-      pasarela = "Pasarela de traje de noche";
+      pasarela = "Entrevista";
       break;
     case 2:
-      pasarela = "Pasarela de traje casual";
+      pasarela = "Pasarela de traje baño";
       break;
     case 3:
-      pasarela = "Pasarela de traje de baño";
+      pasarela = "Pasarela de traje casual";
+      break;
+    case 4:
+      pasarela = "Pasarela de traje de noche";
+      break;
+    case 5:
+      pasarela = "Presentación traje nacional";
+      break;
+    case 6:
+      pasarela = "Pasarela";
+      break;
+    case 7:
+      pasarela = "Ronda de preguntas";
       break;
     default:
       pasarela = "Ronda de preguntas";
@@ -170,7 +182,7 @@ function Votar({}: Props) {
         // Manejar el error, como mostrar un mensaje al usuario
       }
     } else {
-      console.warn("Debes seleccionar una puntuación antes de votar.");
+      alert("Debes seleccionar una puntuación para continuar.");
       // Mostrar mensaje al usuario para seleccionar una puntuación
     }
   };
@@ -180,42 +192,47 @@ function Votar({}: Props) {
   }
 
   return (
-    <div className="fila">
-      <div className="columna">
-        <div>
-          <img src={logo} className="img-fluid" width={"150px"}></img>
-        </div>
-        <div>
-          <Candidata
-            children={data?.nombre}
-            depart={data?.departamento}
-            key={data?.participanteId}
-            img={data?.img || ""}
-          />
-        </div>
+    <div className="columna centrar">
+      <div>
+        <img src={logo} className="img-fluid" width={"200px"}></img>
       </div>
-      <div className="columna">
-        <div className="columna" style={{ justifyContent: "initial" }}>
-          <h1>{pasarela}</h1>
-          <h3>Puntuación</h3>
-          <p>Tiempo restante: {timeLeft} segundos</p>{" "}
-          {/* Mostrar el contador */}
+      <div className="fila" style={{ alignItems: "flex-start" }}>
+        <div className="columna">
+          <div className="candidata-container">
+            <Candidata
+              children={data?.nombre}
+              depart={data?.departamento}
+              key={data?.participanteId}
+              img={data?.img || ""}
+            />
+          </div>
         </div>
-        <div className="fila">
-          {buttonState.map((boton, index) => (
-            <Boton
-              key={index}
-              onClick={() => handleClick(index)}
-              color={boton.value ? verde : blanco}
-            >
-              {index + 1}
+        <div className="columna">
+          <div
+            className="columna titulo-container"
+            style={{ justifyContent: "center" }}
+          >
+            <h1>{pasarela}</h1>
+            <h3>Puntuación</h3>
+            <p>Tiempo restante: {timeLeft} segundos</p>{" "}
+            {/* Mostrar el contador */}
+          </div>
+          <div className="fila botonera">
+            {buttonState.map((boton, index) => (
+              <Boton
+                key={index}
+                onClick={() => handleClick(index)}
+                color={boton.value ? verde : blanco}
+              >
+                {index + 1}
+              </Boton>
+            ))}
+          </div>
+          <div>
+            <Boton onClick={handleSubmitVote} color={negro}>
+              Votar
             </Boton>
-          ))}
-        </div>
-        <div>
-          <Boton onClick={handleSubmitVote} color={negro}>
-            Votar
-          </Boton>
+          </div>
         </div>
       </div>
     </div>

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button, Select, Modal } from "antd";
+import { Button, Select, Modal, message } from "antd";
 import * as signalR from "@microsoft/signalr";
 
 type Props = {};
 
 function Admin({}: Props) {
+  const [messageApi, contextHolder] = message.useMessage();
   useEffect(() => {
     const userData = localStorage.getItem("userData");
     if (userData) {
@@ -99,7 +100,7 @@ function Admin({}: Props) {
   }));
   const optionsCandidatas = dataCandidata?.data.map((participante) => ({
     value: participante.participanteId,
-    label: participante.nombre,
+    label: participante.departamento,
   }));
   useEffect(() => {
     const initSignalRConnection = async () => {
@@ -208,7 +209,7 @@ function Admin({}: Props) {
     if (connection) {
       const message = {
         pagina: "Final",
-        ronda_id: 2,
+        ronda_id: 7,
       };
       const groupName = `Group_1`;
 
@@ -232,6 +233,7 @@ function Admin({}: Props) {
     if (isModalOpen) {
       switch (dataRondasPremdio) {
         case 1:
+          setData([]);
           fetch("https://reinasapiprueba.azurewebsites.net/api/Promedios")
             .then((response) => response.json())
             .then((data) => setData(data));
@@ -282,6 +284,7 @@ function Admin({}: Props) {
   }, [isModalOpen]);
   const top10 = () => {
     setIsTop10(true);
+    messageApi.info("Lista Actualizada");
   };
   const [isTop6, setIsTop6] = useState(false);
   useEffect(() => {
@@ -296,6 +299,7 @@ function Admin({}: Props) {
   }, [isModalOpen]);
   const top6 = () => {
     setIsTop6(true);
+    messageApi.info("Lista Actualizada");
   };
   const [isTop3, setIsTop3] = useState(false);
   useEffect(() => {
@@ -310,6 +314,7 @@ function Admin({}: Props) {
   }, [isModalOpen]);
   const top3 = () => {
     setIsTop3(true);
+    messageApi.info("Lista Actualizada");
   };
 
   const handleOk = () => {
@@ -321,7 +326,7 @@ function Admin({}: Props) {
   };
 
   return (
-    <div>
+    <div className="centrar">
       <div>
         <h2>Candidata</h2>
         <Select
@@ -360,9 +365,12 @@ function Admin({}: Props) {
           <Button type="primary" onClick={showModal}>
             Listar
           </Button>
-          <Button type="primary" onClick={top10}>
-            Top 10
-          </Button>
+          <>
+            {contextHolder}
+            <Button type="primary" onClick={top10}>
+              Top 10
+            </Button>
+          </>
           <Button type="primary" onClick={top6}>
             Top 6
           </Button>
