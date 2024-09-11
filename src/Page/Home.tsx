@@ -4,6 +4,7 @@ import "../App.css";
 import logo from "../Img/reinasLogo.png";
 import { Navigate } from "react-router-dom";
 import * as signalR from "@microsoft/signalr";
+import {API} from "../config"
 
 type Props = {};
 
@@ -21,7 +22,7 @@ function Home({}: Props) {
   const [data, setData] = useState<response>();
   const [usuario, setUsuario] = useState<respuesta>();
   useEffect(() => {
-    fetch("https://reinasapiprueba.azurewebsites.net/api/Participantes")
+    fetch(API.Participantes)
       .then((response) => response.json())
       .then((data) => setData(data));
   }, []);
@@ -30,7 +31,7 @@ function Home({}: Props) {
   useEffect(() => {
     const initSignalRConnection = async () => {
       const conn = new signalR.HubConnectionBuilder()
-        .withUrl("https://reinasapiprueba.azurewebsites.net/notificationHub")
+        .withUrl(API.NotificationHub)
         .build();
 
       try {

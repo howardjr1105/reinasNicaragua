@@ -3,6 +3,7 @@ import Candidata from "../Components/Candidata";
 import logo from "../Img/reinasLogo.png";
 import { Checkbox, Button } from "antd";
 import { Navigate } from "react-router-dom";
+import {API} from "../config"
 
 const Final = () => {
   const [data, setData] = useState<response>();
@@ -14,7 +15,7 @@ const Final = () => {
   const [goToEspera, setGoEspera] = React.useState(false);
 
   useEffect(() => {
-    fetch("https://reinasapiprueba.azurewebsites.net/api/Participantes")
+    fetch(API.Participantes)
       .then((response) => response.json())
       .then((data) => setData(data));
   }, []);
@@ -81,7 +82,7 @@ const Final = () => {
         puntuacion: 1,
       };
       console.log(dataV);
-      fetch("https://reinasapiprueba.azurewebsites.net/api/Votacion", {
+      fetch(API.Votacion, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

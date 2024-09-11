@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../Img/reinasLogo.png";
 import * as signalR from "@microsoft/signalr";
 import { Navigate } from "react-router-dom";
+import {API} from "../config"
 
 const Espera = () => {
   useEffect(() => {
@@ -19,7 +20,7 @@ const Espera = () => {
   useEffect(() => {
     const initSignalRConnection = async () => {
       const conn = new signalR.HubConnectionBuilder()
-        .withUrl("https://reinasapiprueba.azurewebsites.net/notificationHub")
+        .withUrl(API.NotificationHub)
         .build();
 
       try {

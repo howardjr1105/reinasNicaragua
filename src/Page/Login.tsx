@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import reinas from "../Img/reinasLogo.png";
 import Entrada from "../Components/Entrada";
 import { Navigate } from "react-router-dom";
+import {API} from "../config"
 
 
 type Props = {};
@@ -26,7 +27,7 @@ function Login({}: Props) {
 
     try {
       const response = await fetch(
-        "https://reinasapiprueba.azurewebsites.net/api/Auth/authenticate",
+        API.Authenticate,
         {
           method: "POST",
           headers: {

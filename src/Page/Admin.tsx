@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Select, Modal, message } from "antd";
 import * as signalR from "@microsoft/signalr";
+import {API} from "../config"
 
 type Props = {};
 
@@ -14,13 +15,13 @@ function Admin({}: Props) {
     }
   }, []);
   useEffect(() => {
-    fetch("https://reinasapiprueba.azurewebsites.net/api/Ronda")
+    fetch(API.Ronda)
       .then((response) => response.json())
       .then((dataRondas) => setDataRondas(dataRondas));
     console.log(dataRondas);
   }, []);
   useEffect(() => {
-    fetch("https://reinasapiprueba.azurewebsites.net/api/Participantes")
+    fetch(API.Participantes)
       .then((response) => response.json())
       .then((dataCandidata) => setDataCandidata(dataCandidata));
     console.log(dataCandidata);
@@ -105,7 +106,7 @@ function Admin({}: Props) {
   useEffect(() => {
     const initSignalRConnection = async () => {
       const conn = new signalR.HubConnectionBuilder()
-        .withUrl("https://reinasapiprueba.azurewebsites.net/notificationHub")
+        .withUrl(API.NotificationHub)
         .build();
 
       try {
@@ -234,27 +235,27 @@ function Admin({}: Props) {
       switch (dataRondasPremdio) {
         case 1:
           setData([]);
-          fetch("https://reinasapiprueba.azurewebsites.net/api/Promedios")
+          fetch(API.Promedios)
             .then((response) => response.json())
             .then((data) => setData(data));
           break;
         case 2:
           fetch(
-            "https://reinasapiprueba.azurewebsites.net/api/Promedios/ListarTop6"
+            API.ListarTop6
           )
             .then((response) => response.json())
             .then((data) => setData(data));
           break;
         case 3:
           fetch(
-            "https://reinasapiprueba.azurewebsites.net/api/Promedios/ListarTop3"
+            API.ListarTop3
           )
             .then((response) => response.json())
             .then((data) => setData(data));
           break;
         case 4:
           fetch(
-            "https://reinasapiprueba.azurewebsites.net/api/Promedios/ListarGanadora"
+            API.ListarGanadora
           )
             .then((response) => response.json())
             .then((data) => setData(data));
@@ -275,7 +276,7 @@ function Admin({}: Props) {
   useEffect(() => {
     if (isTop10) {
       fetch(
-        "https://reinasapiprueba.azurewebsites.net/api/Participantes/ActualizarTop10"
+        API.ActualizarTop10
       )
         .then((response) => response.json())
         .then((data) => setMensaje(data));
@@ -290,7 +291,7 @@ function Admin({}: Props) {
   useEffect(() => {
     if (isTop6) {
       fetch(
-        "https://reinasapiprueba.azurewebsites.net/api/Participantes/ActualizarTop6"
+        API.ActualizarTop6
       )
         .then((response) => response.json())
         .then((data) => setMensaje(data));
@@ -305,7 +306,7 @@ function Admin({}: Props) {
   useEffect(() => {
     if (isTop3) {
       fetch(
-        "https://reinasapiprueba.azurewebsites.net/api/Participantes/ActualizarTop3"
+        API.ActualizarTop3
       )
         .then((response) => response.json())
         .then((data) => setMensaje(data));

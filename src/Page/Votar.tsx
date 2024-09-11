@@ -5,6 +5,7 @@ import Boton from "../Components/Boton";
 import "../App.css";
 import { Navigate } from "react-router-dom";
 import React from "react";
+import {API} from "../config"
 
 type Props = {};
 
@@ -55,7 +56,7 @@ function Votar({}: Props) {
     if (message?.participante_id) {
       //const rondaId = message.participante_id;
       fetch(
-        `https://reinasapiprueba.azurewebsites.net/api/Participantes/${message.participante_id.toString()}`
+        `${API.Participantes}/${message.participante_id.toString()}`
       )
         .then((response) => response.json())
         .then((data) => setData(data));
@@ -124,7 +125,7 @@ function Votar({}: Props) {
       pasarela = "Pasarela de traje de noche";
       break;
     case 5:
-      pasarela = "Presentación traje nacional";
+      pasarela = "Ronda de preguntas";
       break;
     case 6:
       pasarela = "Pasarela";
@@ -153,15 +154,15 @@ function Votar({}: Props) {
       const puntuacion = selectedButtonIndex + 1;
 
       const data = {
+        puntuacion,
         usuario_ID: usuario?.data.usuario_id,
         participante_ID: message?.participante_id, // Asumiendo que solo hay una candidata
         ronda_ID: message?.ronda_id,
-        puntuacion,
       };
       console.log(data);
       try {
         const response = await fetch(
-          "https://reinasapiprueba.azurewebsites.net/api/Votacion",
+          API.Votacion,
           {
             method: "POST",
             headers: {
