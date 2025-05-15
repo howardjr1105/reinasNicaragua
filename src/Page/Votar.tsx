@@ -5,7 +5,7 @@ import Boton from "../Components/Boton";
 import "../App.css";
 import { Navigate } from "react-router-dom";
 import React from "react";
-import {API} from "../config"
+import { API } from "../config";
 
 type Props = {};
 
@@ -20,7 +20,7 @@ function Votar({}: Props) {
       value: false,
     }))
   );
-  const [timeLeft, setTimeLeft] = useState(60); // Nuevo estado para el contador
+  const [timeLeft, setTimeLeft] = useState(45); // Nuevo estado para el contador
 
   // useEffect para el temporizador
   useEffect(() => {
@@ -55,9 +55,7 @@ function Votar({}: Props) {
   useEffect(() => {
     if (message?.participante_id) {
       //const rondaId = message.participante_id;
-      fetch(
-        `${API.Participantes}/${message.participante_id.toString()}`
-      )
+      fetch(`${API.Participantes}/${message.participante_id.toString()}`)
         .then((response) => response.json())
         .then((data) => setData(data));
       console.log(data);
@@ -161,16 +159,13 @@ function Votar({}: Props) {
       };
       console.log(data);
       try {
-        const response = await fetch(
-          API.Votacion,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
+        const response = await fetch(API.Votacion, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
         if (!response.ok) {
           throw new Error("Error: " + response.statusText);

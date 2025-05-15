@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Select, Modal, message } from "antd";
+import { Button, Select, Modal, message, Table } from "antd";
 import * as signalR from "@microsoft/signalr";
-import {API} from "../config"
+import { API } from "../config";
+import { AlibabaOutlined } from "@ant-design/icons";
+import type { ColumnType } from "antd/es/table";
 
 type Props = {};
 
@@ -28,7 +30,7 @@ function Admin({}: Props) {
   }, []);
   const [usuario, setUsuario] = useState<respuesta>();
   const [dataRondas, setDataRondas] = useState<rondas[]>([]);
-  const [dataRondasPremdio, setDataRondasPromedio] = useState<number>();
+  const [dataRondasPremdio, setDataRondasPromedio] = useState<number>(0);
   const [dataCandidata, setDataCandidata] = useState<response>();
   const [selectedRonda, setSelectedRonda] = useState<number | null>(null);
   const [data, setData] = useState<top[]>([]);
@@ -81,24 +83,31 @@ function Admin({}: Props) {
   }
   interface top {
     participanteId: Number;
+    rondaId?: Number;
     nombre: string;
+    departamento: string;
     puntajeFinal: Number;
-    rango: number;
+    rango: Number;
   }
   const optionsRondas = dataRondas.map((ronda) => ({
     value: ronda.ronda_ID,
     label: ronda.nombre,
   }));
-  const RondasPromedio: rondas[] = [
+  /* const RondasPromedio: rondas[] = [
     { ronda_ID: 1, nombre: "Promedio 4 rondas" },
     { ronda_ID: 2, nombre: "Top 6" },
     { ronda_ID: 3, nombre: "Top 3" },
     { ronda_ID: 4, nombre: "Top 1" },
-  ];
-  const optionsRondasPromedio = RondasPromedio.map((promedio) => ({
+  ];*/
+  const RondasPromedio = dataRondas;
+  let optionsRondasPromedio = RondasPromedio.map((promedio) => ({
     value: promedio.ronda_ID,
     label: promedio.nombre,
   }));
+  optionsRondasPromedio = optionsRondasPromedio.concat({
+    value: 0,
+    label: "Promedios 4 rondas",
+  });
   const optionsCandidatas = dataCandidata?.data.map((participante) => ({
     value: participante.participanteId,
     label: participante.departamento,
@@ -230,40 +239,25 @@ function Admin({}: Props) {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
     if (isModalOpen) {
-      switch (dataRondasPremdio) {
-        case 1:
-          setData([]);
-          fetch(API.Promedios)
-            .then((response) => response.json())
-            .then((data) => setData(data));
-          break;
-        case 2:
-          fetch(
-            API.ListarTop6
-          )
-            .then((response) => response.json())
-            .then((data) => setData(data));
-          break;
-        case 3:
-          fetch(
-            API.ListarTop3
-          )
-            .then((response) => response.json())
-            .then((data) => setData(data));
-          break;
-        case 4:
-          fetch(
-            API.ListarGanadora
-          )
-            .then((response) => response.json())
-            .then((data) => setData(data));
-          break;
-
-        default:
-          console.log("Error en el switch");
-          break;
+      if (dataRondasPremdio === 0) {
+        setData([]);
+        fetch(`${API.Promedios}`)
+          .then((response) => response.json())
+          .then((data) => setData(data.data));
+      } else if (dataRondasPremdio > 0 && dataRondasPremdio < 7) {
+        setData([]);
+        fetch(`${API.Promedios}/${dataRondasPremdio}`)
+          .then((response) => response.json())
+          .then((data) => setData(data.data));
+        console.log(data);
+      } else if (dataRondasPremdio === 7) {
+        setData([]);
+        fetch(`${API.ListarGanadora}`)
+          .then((response) => response.json())
+          .then((data) => setData(data.data));
       }
     }
   }, [isModalOpen]);
@@ -275,9 +269,7 @@ function Admin({}: Props) {
   const [isTop10, setIsTop10] = useState(false);
   useEffect(() => {
     if (isTop10) {
-      fetch(
-        API.ActualizarTop10
-      )
+      fetch(API.ActualizarTop10)
         .then((response) => response.json())
         .then((data) => setMensaje(data));
       console.log(mensaje);
@@ -290,9 +282,7 @@ function Admin({}: Props) {
   const [isTop6, setIsTop6] = useState(false);
   useEffect(() => {
     if (isTop6) {
-      fetch(
-        API.ActualizarTop6
-      )
+      fetch(API.ActualizarTop6)
         .then((response) => response.json())
         .then((data) => setMensaje(data));
       console.log(mensaje);
@@ -305,9 +295,7 @@ function Admin({}: Props) {
   const [isTop3, setIsTop3] = useState(false);
   useEffect(() => {
     if (isTop3) {
-      fetch(
-        API.ActualizarTop3
-      )
+      fetch(API.ActualizarTop3)
         .then((response) => response.json())
         .then((data) => setMensaje(data));
       console.log(mensaje);
@@ -325,6 +313,34 @@ function Admin({}: Props) {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+  const columns: ColumnType<top>[] = [
+    {
+      title: "Rango",
+      dataIndex: "rango",
+      key: "rango",
+      align: "center",
+      //sorter: (a, b) => a.rango - b.rango, // Permite ordenar la columna
+    },
+    {
+      title: "Nombre",
+      dataIndex: "nombre",
+      key: "nombre",
+      align: "center",
+    },
+    {
+      title: "Departamento",
+      dataIndex: "departamento",
+      key: "departamento",
+      align: "center",
+    },
+    {
+      title: "Puntaje Final",
+      dataIndex: "puntajeFinal",
+      key: "puntajeFinal",
+      align: "center",
+      //sorter: (a, b) => a.puntajeFinal - b.puntajeFinal, // Ordenamiento opcional
+    },
+  ];
 
   return (
     <div className="centrar">
@@ -383,30 +399,27 @@ function Admin({}: Props) {
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
+            footer={[
+              <Button key="cancel" onClick={handleCancel}>
+                Cancelar
+              </Button>,
+              <Button key="ok" type="primary" onClick={handleOk}>
+                Aceptar
+              </Button>,
+            ]}
           >
-            <table>
-              <thead>
-                <tr>
-                  <th>Rango</th>
-                  <th>Nombre</th>
-                  <th>Puntaje Final</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data?.map((candidata: any) => (
-                  <tr key={candidata.participanteId}>
-                    <td>{candidata.rango}</td>
-                    <td>{candidata.nombre}</td>
-                    <td>{candidata.puntajeFinal}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={false} // Configura paginación
+              rowKey="participanteId"
+              bordered
+              size="middle"
+            />
           </Modal>
         </>
       </div>
     </div>
   );
 }
-
 export default Admin;
