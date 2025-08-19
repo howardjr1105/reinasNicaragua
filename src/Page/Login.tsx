@@ -15,17 +15,27 @@ function Login({}: Props) {
     correo: "",
     contraseña: "",
   });
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [inputStatus, setInputStatus] = useState<{ correo: "error" | undefined; contraseña: "error" | undefined }>({
+    correo: undefined,
+    contraseña: undefined,
+  });
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
     });
+    // limpiar estado de error del campo editado y el mensaje
+    const field = event.target.name as keyof FormData;
+    setInputStatus((prev) => ({ ...prev, [field]: undefined }));
+    if (errorMsg) setErrorMsg(null);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
+      setErrorMsg(null);
       const response = await fetch(
         API.Authenticate,
         {
@@ -38,14 +48,27 @@ function Login({}: Props) {
       );
 
       if (!response.ok) {
-        throw new Error("Error: " + response.statusText);
+        // Credenciales inválidas u otro error del servidor
+        if (response.status === 401 || response.status === 400) {
+          setErrorMsg("Correo o contraseña incorrectos");
+          setInputStatus({ correo: "error", contraseña: "error" });
+          return;
+        }
+        setErrorMsg("No se pudo iniciar sesión. Intenta de nuevo.");
+        return;
       }
       const data = await response.json();
       console.log("Success:", data);
+      if (!data?.data?.autenticado) {
+        setErrorMsg("Correo o contraseña incorrectos");
+        setInputStatus({ correo: "error", contraseña: "error" });
+        return;
+      }
       localStorage.setItem("userData", JSON.stringify(data));
       setGoToPage(data);
     } catch (error) {
       console.error("Error:", error);
+      setErrorMsg("Error de red. Verifica tu conexión e intenta nuevamente.");
     }
   };
   const negro = "btn btn-dark";
@@ -94,16 +117,23 @@ function Login({}: Props) {
             placeholder="Usuario"
             onChange={handleChange}
             name="correo"
+            status={inputStatus.correo}
           ></Entrada>
           <Entrada
             type="password"
             placeholder="Contraseña"
             onChange={handleChange}
             name="contraseña"
+            status={inputStatus.contraseña}
           ></Entrada>
           <Boton onClick={() => {}} color={negro}>
             Iniciar Sesión
           </Boton>
+          {errorMsg && (
+            <div style={{ color: "red", marginTop: "0.75rem", fontSize: "0.9rem" }}>
+              {errorMsg}
+            </div>
+          )}
         </form>
       </Card>
     </div>

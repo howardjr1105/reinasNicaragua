@@ -3,15 +3,12 @@ import Candidata from "../Components/Candidata";
 import "../App.css";
 import logo from "../Img/reinasLogo.png";
 import { Navigate } from "react-router-dom";
-import * as signalR from "@microsoft/signalr";
 import {API} from "../config"
+import { signalRService } from "../services/signalr";
 
 type Props = {};
 
 function Home({}: Props) {
-  const [connection, setConnection] = useState<signalR.HubConnection | null>(
-    null
-  );
   useEffect(() => {
     const userData = localStorage.getItem("userData");
     if (userData) {
@@ -27,58 +24,41 @@ function Home({}: Props) {
       .then((data) => setData(data));
   }, []);
 
-  // Inicializar la conexión a SignalR y unirse a un grupo según el rol del usuario
+  // Inicializar la conexión a SignalR y unirse a un grupo
   useEffect(() => {
-    const initSignalRConnection = async () => {
-      const conn = new signalR.HubConnectionBuilder()
-        .withUrl(API.NotificationHub)
-        .build();
+    if (!usuario) return;
+    let mounted = true;
+    const handler = (receivedMessage: string) => {
+      if (!mounted) return;
+      const parsedMessage = JSON.parse(receivedMessage);
+      console.log("Received message: ", parsedMessage);
 
-      try {
-        await conn.start();
-        console.log("Connected to SignalR hub");
-
-        if (usuario) {
-          const groupName = `Group_1`;
-          await conn.invoke("AddToGroup", groupName);
-          console.log(`Joined group ${groupName}`);
-        }
-
-        // Configurar el evento para recibir mensajes
-        conn.on("ReceiveMessage", (receivedMessage: string) => {
-          const parsedMessage = JSON.parse(receivedMessage);
-          console.log("Received message: ", parsedMessage);
-
-          if (parsedMessage.ronda_id && parsedMessage.participante_id) {
-            localStorage.setItem("messageData", JSON.stringify(parsedMessage));
-            //setMessage();
-            
-
-            setGoToVotar(true); // Set navigation to vote screen
-          } else if (
-            parsedMessage.pagina == "Final" &&
-            parsedMessage.ronda_id
-          ) {
-            localStorage.setItem("messageData", JSON.stringify(parsedMessage));
-            setGoToFinal(true);
-          } else if (parsedMessage.pagina == "Espera") {
-            setGoToEspera(true);
-          }
-        });
-        setConnection(conn);
-      } catch (err) {
-        console.error("Error connecting to SignalR hub", err);
+      if (parsedMessage.ronda_id && parsedMessage.participante_id) {
+        localStorage.setItem("messageData", JSON.stringify(parsedMessage));
+        setGoToVotar(true);
+      } else if (parsedMessage.pagina == "Final" && parsedMessage.ronda_id) {
+        localStorage.setItem("messageData", JSON.stringify(parsedMessage));
+        setGoToFinal(true);
+      } else if (parsedMessage.pagina == "Espera") {
+        setGoToEspera(true);
       }
     };
 
-    if (usuario) {
-      initSignalRConnection();
-    }
+    (async () => {
+      try {
+        await signalRService.start(API.NotificationHub);
+        const groupName = `Group_1`;
+        await signalRService.joinGroup(groupName);
+        console.log(`Joined group ${groupName}`);
+        signalRService.on("ReceiveMessage", handler);
+      } catch (err) {
+        console.error("Error connecting to SignalR hub", err);
+      }
+    })();
 
     return () => {
-      if (connection) {
-        connection.stop();
-      }
+      mounted = false;
+      signalRService.off("ReceiveMessage", handler);
     };
   }, [usuario]);
   interface response {

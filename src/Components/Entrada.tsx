@@ -6,9 +6,10 @@ type Props = {
   placeholder: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   name: string;
+  status?: "error" | "warning"; // para mostrar bordes en rojo/amarillo
 };
 
-function Entrada({ type, placeholder, onChange, name }: Props) {
+function Entrada({ type, placeholder, onChange, name, status }: Props) {
   /*const {
     register,
     formState: { errors },
@@ -24,6 +25,7 @@ function Entrada({ type, placeholder, onChange, name }: Props) {
         onChange={onChange}
         required
         name={name}
+        status={status}
         //{...register("text", { required: true, minLength: 2, maxLength: 20 })}
       />
     </div>

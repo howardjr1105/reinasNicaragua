@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Button, Select, Modal, message } from "antd";
-import * as signalR from "@microsoft/signalr";
-import {API} from "../config"
+import { Button, Select, Modal, message, Table } from "antd";
+import { API } from "../config";
+import { signalRService } from "../services/signalr";
+import type { ColumnType } from "antd/es/table";
 
 type Props = {};
 
@@ -18,29 +19,39 @@ function Admin({}: Props) {
     fetch(API.Ronda)
       .then((response) => response.json())
       .then((dataRondas) => setDataRondas(dataRondas));
-    console.log(dataRondas);
   }, []);
   useEffect(() => {
     fetch(API.Participantes)
       .then((response) => response.json())
       .then((dataCandidata) => setDataCandidata(dataCandidata));
-    console.log(dataCandidata);
   }, []);
   const [usuario, setUsuario] = useState<respuesta>();
   const [dataRondas, setDataRondas] = useState<rondas[]>([]);
-  const [dataRondasPremdio, setDataRondasPromedio] = useState<number>();
+  const [dataRondasPremdio, setDataRondasPromedio] = useState<number>(0);
   const [dataCandidata, setDataCandidata] = useState<response>();
   const [selectedRonda, setSelectedRonda] = useState<number | null>(null);
   const [data, setData] = useState<top[]>([]);
   const [selectedCandidata, setSelectedCandidata] = useState<number | null>(
     null
   );
-  const [connection, setConnection] = useState<signalR.HubConnection | null>(
-    null
-  );
+  // SignalR ahora es gestionado por signalRService (singleton)
   const handleRondaChange = (value: number) => {
     console.log(`selected ronda ${value}`);
     setSelectedRonda(value);
+  };
+  const loadPromedios = async () => {
+    setData([]);
+    let json: any = null;
+    if (dataRondasPremdio === 0) {
+      json = await fetchJsonSafe(`${API.Promedios}`);
+    } else if (dataRondasPremdio > 0 && dataRondasPremdio < 7) {
+      json = await fetchJsonSafe(`${API.Promedios}/${dataRondasPremdio}`);
+    } else if (dataRondasPremdio === 7) {
+      json = await fetchJsonSafe(`${API.ListarGanadora}`);
+    }
+    if (json && json.data) {
+      setData(json.data);
+    }
   };
   const handleRondaPromedioChange = (value: number) => {
     console.log(`selected ronda Promedio ${value}`);
@@ -81,69 +92,81 @@ function Admin({}: Props) {
   }
   interface top {
     participanteId: Number;
+    rondaId?: Number;
     nombre: string;
+    departamento: string;
     puntajeFinal: Number;
-    rango: number;
+    rango: Number;
   }
   const optionsRondas = dataRondas.map((ronda) => ({
     value: ronda.ronda_ID,
     label: ronda.nombre,
   }));
-  const RondasPromedio: rondas[] = [
+  /* const RondasPromedio: rondas[] = [
     { ronda_ID: 1, nombre: "Promedio 4 rondas" },
     { ronda_ID: 2, nombre: "Top 6" },
     { ronda_ID: 3, nombre: "Top 3" },
     { ronda_ID: 4, nombre: "Top 1" },
-  ];
-  const optionsRondasPromedio = RondasPromedio.map((promedio) => ({
+  ];*/
+  const RondasPromedio = dataRondas;
+  let optionsRondasPromedio = RondasPromedio.map((promedio) => ({
     value: promedio.ronda_ID,
     label: promedio.nombre,
   }));
+  optionsRondasPromedio = optionsRondasPromedio.concat({
+    value: 0,
+    label: "Promedios 4 rondas",
+  });
   const optionsCandidatas = dataCandidata?.data.map((participante) => ({
     value: participante.participanteId,
     label: participante.departamento,
   }));
-  useEffect(() => {
-    const initSignalRConnection = async () => {
-      const conn = new signalR.HubConnectionBuilder()
-        .withUrl(API.NotificationHub)
-        .build();
-
+  // Helper para parsear respuestas, mostrando errores si no son JSON
+  const fetchJsonSafe = async (url: string) => {
+    try {
+      const resp = await fetch(url);
+      const text = await resp.text();
       try {
-        await conn.start();
-        console.log("Connected to SignalR hub");
+        return JSON.parse(text);
+      } catch (e) {
+        // Respuesta no es JSON, mostrar el texto devuelto por el servidor
+        messageApi.error(text || "Respuesta no válida del servidor");
+        return null;
+      }
+    } catch (err: any) {
+      messageApi.error(err?.message || "Error de red");
+      return null;
+    }
+  };
+  useEffect(() => {
+    if (!usuario) return;
+    let mounted = true;
+    const handler = (message: string) => {
+      if (!mounted) return;
+      console.log("Received message:", message);
+      // Aquí podrías actualizar UI o redirigir
+    };
 
-        if (usuario) {
-          const groupName = `Group_${usuario.data.rol_id}`;
-          await conn.invoke("AddToGroup", groupName);
-          console.log(`Joined group ${groupName}`);
-        }
-
-        // Configurar el evento para recibir mensajes
-        conn.on("ReceiveMessage", (message) => {
-          console.log("Received message: ", message);
-          // Lógica para cambiar a la pantalla de votación
-        });
-
-        setConnection(conn);
+    (async () => {
+      try {
+        await signalRService.start(API.NotificationHub);
+        const groupName = `Group_${usuario.data.rol_id}`;
+        await signalRService.joinGroup(groupName as unknown as string);
+        console.log(`Joined group ${groupName}`);
+        signalRService.on("ReceiveMessage", handler);
       } catch (err) {
         console.error("Error connecting to SignalR hub", err);
       }
-    };
-
-    if (usuario) {
-      initSignalRConnection();
-    }
+    })();
 
     return () => {
-      if (connection) {
-        connection.stop();
-      }
+      mounted = false;
+      signalRService.off("ReceiveMessage", handler);
     };
   }, [usuario]);
 
   const sendMessageCand = async () => {
-    if (selectedRonda !== null && selectedCandidata !== null && connection) {
+    if (selectedRonda !== null && selectedCandidata !== null) {
       const message = {
         ronda_id: selectedRonda,
         participante_id: selectedCandidata,
@@ -151,11 +174,8 @@ function Admin({}: Props) {
       const groupName = `Group_1`;
 
       try {
-        await connection.invoke(
-          "SendMessage",
-          groupName,
-          JSON.stringify(message)
-        );
+        await signalRService.start(API.NotificationHub);
+        await signalRService.send(groupName, message);
         console.log("Mensaje enviado:", message);
       } catch (err) {
         console.error("Error sending message", err);
@@ -165,49 +185,34 @@ function Admin({}: Props) {
     }
   };
   const sendMessageEspera = async () => {
-    if (connection) {
       const message = {
         pagina: "Espera",
       };
       const groupName = `Group_1`;
 
       try {
-        await connection.invoke(
-          "SendMessage",
-          groupName,
-          JSON.stringify(message)
-        );
+        await signalRService.start(API.NotificationHub);
+        await signalRService.send(groupName, message);
         console.log("Mensaje enviado:", message);
       } catch (err) {
         console.error("Error sending message", err);
       }
-    } else {
-      console.log("Pagina de espera no fue enviada");
-    }
   };
   const sendMessageHome = async () => {
-    if (connection) {
       const message = {
         pagina: "Home",
       };
       const groupName = `Group_1`;
 
       try {
-        await connection.invoke(
-          "SendMessage",
-          groupName,
-          JSON.stringify(message)
-        );
+        await signalRService.start(API.NotificationHub);
+        await signalRService.send(groupName, message);
         console.log("Mensaje enviado:", message);
       } catch (err) {
         console.error("Error sending message", err);
       }
-    } else {
-      console.log("Pagina de espera no fue enviada");
-    }
   };
   const sendMessageFinal = async () => {
-    if (connection) {
       const message = {
         pagina: "Final",
         ronda_id: 7,
@@ -215,104 +220,65 @@ function Admin({}: Props) {
       const groupName = `Group_1`;
 
       try {
-        await connection.invoke(
-          "SendMessage",
-          groupName,
-          JSON.stringify(message)
-        );
+        await signalRService.start(API.NotificationHub);
+        await signalRService.send(groupName, message);
         console.log("Mensaje enviado:", message);
       } catch (err) {
         console.error("Error sending message", err);
-      }
-    } else {
-      console.log("Pagina de espera no fue enviada");
     }
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  useEffect(() => {
-    if (isModalOpen) {
-      switch (dataRondasPremdio) {
-        case 1:
-          setData([]);
-          fetch(API.Promedios)
-            .then((response) => response.json())
-            .then((data) => setData(data));
-          break;
-        case 2:
-          fetch(
-            API.ListarTop6
-          )
-            .then((response) => response.json())
-            .then((data) => setData(data));
-          break;
-        case 3:
-          fetch(
-            API.ListarTop3
-          )
-            .then((response) => response.json())
-            .then((data) => setData(data));
-          break;
-        case 4:
-          fetch(
-            API.ListarGanadora
-          )
-            .then((response) => response.json())
-            .then((data) => setData(data));
-          break;
 
-        default:
-          console.log("Error en el switch");
-          break;
-      }
-    }
-  }, [isModalOpen]);
+  useEffect(() => {
+    if (!isModalOpen) return;
+    loadPromedios();
+  }, [isModalOpen, dataRondasPremdio]);
+
   const showModal = () => {
-    setIsModalOpen(true);
+    if (!isModalOpen) {
+      setIsModalOpen(true);
+    } else {
+      // Si ya está abierto, recarga los datos
+      loadPromedios();
+    }
   };
 
-  const [mensaje, setMensaje] = useState("");
   const [isTop10, setIsTop10] = useState(false);
   useEffect(() => {
-    if (isTop10) {
-      fetch(
-        API.ActualizarTop10
-      )
-        .then((response) => response.json())
-        .then((data) => setMensaje(data));
-      console.log(mensaje);
-    }
-  }, [isModalOpen]);
+    if (!isTop10) return;
+    (async () => {
+      await fetchJsonSafe(API.ActualizarTop10);
+      setIsTop10(false);
+      if (isModalOpen) await loadPromedios();
+    })();
+  }, [isTop10]);
   const top10 = () => {
     setIsTop10(true);
     messageApi.info("Lista Actualizada");
   };
   const [isTop6, setIsTop6] = useState(false);
   useEffect(() => {
-    if (isTop6) {
-      fetch(
-        API.ActualizarTop6
-      )
-        .then((response) => response.json())
-        .then((data) => setMensaje(data));
-      console.log(mensaje);
-    }
-  }, [isModalOpen]);
+    if (!isTop6) return;
+    (async () => {
+      await fetchJsonSafe(API.ActualizarTop6);
+      setIsTop6(false);
+      if (isModalOpen) await loadPromedios();
+    })();
+  }, [isTop6]);
   const top6 = () => {
     setIsTop6(true);
     messageApi.info("Lista Actualizada");
   };
   const [isTop3, setIsTop3] = useState(false);
   useEffect(() => {
-    if (isTop3) {
-      fetch(
-        API.ActualizarTop3
-      )
-        .then((response) => response.json())
-        .then((data) => setMensaje(data));
-      console.log(mensaje);
-    }
-  }, [isModalOpen]);
+    if (!isTop3) return;
+    (async () => {
+      await fetchJsonSafe(API.ActualizarTop3);
+      setIsTop3(false);
+      if (isModalOpen) await loadPromedios();
+    })();
+  }, [isTop3]);
   const top3 = () => {
     setIsTop3(true);
     messageApi.info("Lista Actualizada");
@@ -325,6 +291,35 @@ function Admin({}: Props) {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  const columns: ColumnType<top>[] = [
+    {
+      title: "Rango",
+      dataIndex: "rango",
+      key: "rango",
+      align: "center",
+      //sorter: (a, b) => a.rango - b.rango, // Permite ordenar la columna
+    },
+    {
+      title: "Nombre",
+      dataIndex: "nombre",
+      key: "nombre",
+      align: "center",
+    },
+    {
+      title: "Departamento",
+      dataIndex: "departamento",
+      key: "departamento",
+      align: "center",
+    },
+    {
+      title: "Puntaje Final",
+      dataIndex: "puntajeFinal",
+      key: "puntajeFinal",
+      align: "center",
+      //sorter: (a, b) => a.puntajeFinal - b.puntajeFinal, // Ordenamiento opcional
+    },
+  ];
 
   return (
     <div className="centrar">
@@ -383,30 +378,27 @@ function Admin({}: Props) {
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
+            footer={[
+              <Button key="cancel" onClick={handleCancel}>
+                Cancelar
+              </Button>,
+              <Button key="ok" type="primary" onClick={handleOk}>
+                Aceptar
+              </Button>,
+            ]}
           >
-            <table>
-              <thead>
-                <tr>
-                  <th>Rango</th>
-                  <th>Nombre</th>
-                  <th>Puntaje Final</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data?.map((candidata: any) => (
-                  <tr key={candidata.participanteId}>
-                    <td>{candidata.rango}</td>
-                    <td>{candidata.nombre}</td>
-                    <td>{candidata.puntajeFinal}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={false} // Configura paginación
+              rowKey="participanteId"
+              bordered
+              size="middle"
+            />
           </Modal>
         </>
       </div>
     </div>
   );
 }
-
 export default Admin;
