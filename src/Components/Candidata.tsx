@@ -10,7 +10,7 @@ type Props = {
 function Candidata({ children, img, depart }: Props) {
   return (
     <div className="cand">
-      <div>
+      <div >
         <img src={img}></img>
       </div>
       <div>

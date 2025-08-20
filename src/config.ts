@@ -1,6 +1,6 @@
 // src/config.ts
 
-const URL = "https://localhost:7093";
+const URL = "https://reinasnicaragua.onrender.com";
 export const API = {
   Authenticate: `${URL}/api/Auth/authenticate`,
   Ronda: `${URL}/api/Ronda`,

@@ -28,6 +28,9 @@ form {
 }
 .cand img {
   width: 12rem;
+  border-radius: 2.3rem;
+  margin: 0.5rem;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
 .cand {
   display: flex;
@@ -37,6 +40,7 @@ form {
   text-align: center;
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 2.5rem;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
 .principal {
   justify-content: center;
