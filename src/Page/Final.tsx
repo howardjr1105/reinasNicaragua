@@ -107,6 +107,13 @@ const Final = () => {
 
   return (
     <div className="columna centrar full-screen-center">
+      {!data && (
+        <div className="overlay-loading">
+          <img src={logo} style={{padding: "3rem", width: "25rem"}}/>
+          <div className="spinner" />
+          
+        </div>
+      )}
       <div>
         <img src={logo} className="img-fluid" width={"150px"} alt="Logo" />
       </div>

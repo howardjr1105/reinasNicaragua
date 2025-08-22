@@ -323,6 +323,7 @@ function Admin({}: Props) {
 
   return (
     <div className="centrar">
+      
       <div>
         <h2>Candidata</h2>
         <Select
