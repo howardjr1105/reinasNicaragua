@@ -34,6 +34,16 @@ function Admin({}: Props) {
   const [selectedCandidata, setSelectedCandidata] = useState<number | null>(
     null
   );
+  // Helper para recargar candidatas activas
+  const reloadCandidatas = async () => {
+    try {
+      const resp = await fetch(API.Participantes);
+      const json = await resp.json();
+      setDataCandidata(json);
+    } catch (e) {
+      // silencioso: evitar romper flujo si falla
+    }
+  };
   // SignalR ahora es gestionado por signalRService (singleton)
   const handleRondaChange = (value: number) => {
     console.log(`selected ronda ${value}`);
@@ -251,6 +261,8 @@ function Admin({}: Props) {
       await fetchJsonSafe(API.ActualizarTop10);
       setIsTop10(false);
       if (isModalOpen) await loadPromedios();
+      await reloadCandidatas();
+      setSelectedCandidata(null);
     })();
   }, [isTop10]);
   const top10 = () => {
@@ -264,6 +276,8 @@ function Admin({}: Props) {
       await fetchJsonSafe(API.ActualizarTop6);
       setIsTop6(false);
       if (isModalOpen) await loadPromedios();
+      await reloadCandidatas();
+      setSelectedCandidata(null);
     })();
   }, [isTop6]);
   const top6 = () => {
@@ -277,6 +291,8 @@ function Admin({}: Props) {
       await fetchJsonSafe(API.ActualizarTop3);
       setIsTop3(false);
       if (isModalOpen) await loadPromedios();
+      await reloadCandidatas();
+      setSelectedCandidata(null);
     })();
   }, [isTop3]);
   const top3 = () => {
@@ -329,6 +345,7 @@ function Admin({}: Props) {
         <Select
           style={{ width: 120 }}
           options={optionsCandidatas}
+          value={selectedCandidata ?? undefined}
           onChange={handleCandidataChange}
         />
         <h2>Ronda</h2>
