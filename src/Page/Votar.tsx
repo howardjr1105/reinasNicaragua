@@ -188,7 +188,7 @@ function Votar({}: Props) {
   }
 
   return (
-    <div className="columna centrar">
+    <div className="columna centrar full-screen-center">
       <div>
         <img src={logo} className="img-fluid" width={"200px"}></img>
       </div>

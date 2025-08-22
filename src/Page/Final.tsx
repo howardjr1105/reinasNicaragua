@@ -106,7 +106,7 @@ const Final = () => {
   }
 
   return (
-    <div className="columna centrar">
+    <div className="columna centrar full-screen-center">
       <div>
         <img src={logo} className="img-fluid" width={"150px"} alt="Logo" />
       </div>

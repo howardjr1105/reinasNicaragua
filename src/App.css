@@ -5,9 +5,11 @@ body {
   user-select: none;
 }
 .candidata-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  width: 140vh;
   gap: 1.5rem; /* Ajusta el espacio entre los elementos */
+  justify-content: center;
 }
 form {
   display: flex;
@@ -87,4 +89,43 @@ form {
 .titulo-container p {
   margin: 0.5rem 0; /* Espaciado vertical entre cada elemento */
   text-align: center; /* Centrar el texto */
+}
+
+.full-screen-center {
+  min-height: 100vh; /* altura mínima igual al alto de la ventana */
+  display: flex;
+  justify-content: center; /* centra horizontalmente */
+  align-items: center;     /* centra verticalmente */
+  flex-direction: column;  /* opcional, si quieres apilar elementos */
+}
+
+/* Overlay de carga de pantalla completa */
+.overlay-loading {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  background-image: linear-gradient(180deg, #1152a0 0%, #a8d7ca 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: #fff;
+  gap: 12px;
+  backdrop-filter: blur(2px);
+}
+
+.spinner {
+  width: 6rem;
+  height: 6rem;
+  border: 4px solid #ffffff33;
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

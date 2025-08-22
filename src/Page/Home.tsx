@@ -95,7 +95,14 @@ function Home({}: Props) {
   if (goToEspera) return <Navigate to="/Espera" />;
 
   return (
-    <div className="principal">
+    <div className="principal full-screen-center">
+      {!data && (
+        <div className="overlay-loading">
+          <img src={logo} style={{padding: "3rem", width: "25rem"}}/>
+          <div className="spinner" />
+          
+        </div>
+      )}
       <div className="logo">
         <img src={logo} className="img-fluid" width={"150px"}></img>
       </div>
