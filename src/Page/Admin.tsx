@@ -27,7 +27,7 @@ function Admin({}: Props) {
   }, []);
   const [usuario, setUsuario] = useState<respuesta>();
   const [dataRondas, setDataRondas] = useState<rondas[]>([]);
-  const [dataRondasPremdio, setDataRondasPromedio] = useState<number>(0);
+  const [dataRondasPremdio, setDataRondasPromedio] = useState<number | null>(null);
   const [dataCandidata, setDataCandidata] = useState<response>();
   const [selectedRonda, setSelectedRonda] = useState<number | null>(null);
   const [data, setData] = useState<top[]>([]);
@@ -51,6 +51,7 @@ function Admin({}: Props) {
   };
   const loadPromedios = async () => {
     setData([]);
+    if (dataRondasPremdio === null) return;
     let json: any = null;
     if (dataRondasPremdio === 0) {
       json = await fetchJsonSafe(`${API.Promedios}`);
@@ -239,6 +240,9 @@ function Admin({}: Props) {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPdfOpen, setIsPdfOpen] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -306,6 +310,47 @@ function Admin({}: Props) {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  // Descarga y muestra el PDF para la ronda seleccionada en dataRondasPremdio
+  const openReportePDF = async () => {
+    if (dataRondasPremdio === null) {
+      messageApi.warning("Seleccione una ronda válida para ver el PDF");
+      return;
+    }
+    setIsPdfLoading(true);
+    try {
+      // Intento 1: ruta por segmento: /ReportePDF/{id}
+      let resp = await fetch(`${API.ReportePDF}/${dataRondasPremdio}`, {
+        headers: { Accept: "application/pdf" },
+      });
+      // Si falla, intento 2: query string: /ReportePDF?rondaId={id}
+      if (!resp.ok) {
+        resp = await fetch(`${API.ReportePDF}?rondaId=${dataRondasPremdio}`, {
+          headers: { Accept: "application/pdf" },
+        });
+      }
+      if (!resp.ok) {
+        const text = await resp.text();
+        throw new Error(text || "No fue posible obtener el PDF");
+      }
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+      setIsPdfOpen(true);
+    } catch (err: any) {
+      messageApi.error(err?.message || "Error al generar el reporte PDF");
+    } finally {
+      setIsPdfLoading(false);
+    }
+  };
+
+  const closeReportePDF = () => {
+    setIsPdfOpen(false);
+    if (pdfUrl) {
+      URL.revokeObjectURL(pdfUrl);
+      setPdfUrl(null);
+    }
   };
 
   const columns: ColumnType<top>[] = [
@@ -376,8 +421,21 @@ function Admin({}: Props) {
             options={optionsRondasPromedio}
             onChange={handleRondaPromedioChange}
           />
-          <Button type="primary" onClick={showModal}>
+          <Button
+            type="primary"
+            onClick={showModal}
+            disabled={dataRondasPremdio === null}
+          >
             Listar
+          </Button>
+          <Button
+            type="default"
+            loading={isPdfLoading}
+            onClick={openReportePDF}
+            disabled={!dataRondasPremdio || dataRondasPremdio <= 0}
+            style={{ marginLeft: 8 }}
+          >
+            Ver PDF
           </Button>
           <>
             {contextHolder}
@@ -413,6 +471,29 @@ function Admin({}: Props) {
               bordered
               size="middle"
             />
+          </Modal>
+          <Modal
+            title="Reporte PDF"
+            open={isPdfOpen}
+            onCancel={closeReportePDF}
+            footer={[
+              <Button key="close" onClick={closeReportePDF}>
+                Cerrar
+              </Button>,
+            ]}
+            width={900}
+            centered
+            styles={{ body: { padding: 0 } }}
+          >
+            {pdfUrl ? (
+              <iframe
+                src={pdfUrl}
+                title="Reporte PDF"
+                style={{ width: "100%", height: "80vh", border: "none" }}
+              />
+            ) : (
+              <div style={{ padding: 24 }}>No hay contenido para mostrar.</div>
+            )}
           </Modal>
         </>
       </div>

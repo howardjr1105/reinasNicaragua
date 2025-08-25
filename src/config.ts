@@ -1,6 +1,6 @@
 // src/config.ts
 
-const URL = "https://reinasnicaragua.onrender.com";
+const URL = "https://localhost:7093";
 export const API = {
   Authenticate: `${URL}/api/Auth/authenticate`,
   Ronda: `${URL}/api/Ronda`,
@@ -14,6 +14,7 @@ export const API = {
   ActualizarTop6: `${URL}/api/Participantes/ActualizarTop6`,
   ActualizarTop3: `${URL}/api/Participantes/ActualizarTop3`,
   Votacion: `${URL}/api/Votacion`,
+  ReportePDF: `${URL}/api/Promedios/ReportePDF`,
 
   // Agrega más propiedades según necesites
 };
